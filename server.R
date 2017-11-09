@@ -15,9 +15,6 @@ library(feather)
 
 # extrafont::loadfonts(device = "win", quiet = TRUE)
 
-### TODO: input values should be bigger than zero
-### TODO: helper function for adding in missing dates
-
 plot_sent <- function(data, dots, timeGap, type = "multi") {
   if (type == "multi") p <- ggplot(data = data, aes(x = date, y = net_sent, color = name))
   else if (type == "full") p <- ggplot(data = data, aes(x = date, y = net_sent_full))
@@ -47,17 +44,29 @@ plot_docs <- function(data, color = "language") {
   return(p)
 }
 
+validator <- function(inp) {
+  v <- (length(inp$language) > 0 
+  & length(inp$lexicon) > 0 
+  & as.integer(inp$nSMA) > 0 
+  & as.integer(inp$minWords) > 0 
+  & as.integer(inp$minDocs) > 0
+  & (inp$dates[2] - inp$dates[1]) > 0)
+  return(v)
+}
+
+validator2 <- function(inp) {
+  v <- (as.integer(inp$nSMA2) > 0 
+        & as.integer(inp$minWords2) > 0 
+        & as.integer(inp$minDocs2) > 0
+        & (inp$dates2[2] - inp$dates2[1]) > 0)
+  return(v)
+}
+
 # load input data with all relevant information, including sentiment scores (data not included in the repo!)
 out <- as.data.table(feather::read_feather("OUT.feather"))
 
 function(input, output) {
   computeData <- reactive({
-    validate(
-      need((length(input$language) > 0 & length(input$lexicon) > 0),
-           paste0("Select at least one input language, one input lexicon and one input topic.",
-                  "\n \n",
-                  "If none of the desks is selected, all desks are considered."))
-    )
     data <- out[keyword %in% input$keywords, ] # selected topic
 
     if (length(input$desk) > 0) {
@@ -83,25 +92,19 @@ function(input, output) {
 
     if (nrow(data) > 0) {
       nvals <- data[, list(n = length(net_sent)), by = list(lexicon, language)]$n
-
       # fill in missing dates with 0 for net_sent, words and documents
       dataNew <- c()
       for (nm in unique(data$name)) {
         dt <- subset(data, name == nm)
-
-        st <- as.POSIXct(min(input$dates2[1]), format = "%Y-%m-%d")
-        end <- as.POSIXct(max(input$dates2[2]), format = "%Y-%m-%d")
+        st <- as.POSIXct(min(input$dates[1]), format = "%Y-%m-%d")
+        end <- as.POSIXct(max(input$dates[2]), format = "%Y-%m-%d")
         date <- as.Date(seq.POSIXt(st, end, by = "day"))
-
         fill <- dt[1, 2:ncol(dt)]
         fill[, "net_sent" := 0]
         fill[, c("words", "documents") := NA]
-
         oldIn <- date %in% dt$date
-
         dtNew <- merge(as.data.table(date), dt, by = "date", all = TRUE)
         dtNew[!oldIn, 2:ncol(dtNew)] <- fill
-
         dataNew <- rbind(dataNew, dtNew)
       }
       data <- dataNew
@@ -120,8 +123,7 @@ function(input, output) {
         data[, "net_sent" := norm$vals]
       }
       nSMA <- as.integer(input$nSMA)
-      sma <- data[, list(vals = SMA(net_sent, n = nSMA)),
-                  by = list(lexicon, language)]
+      sma <- data[, list(vals = SMA(net_sent, n = nSMA)), by = list(lexicon, language)]
       data[, "sma" := sma$vals]
     }
 
@@ -161,32 +163,24 @@ function(input, output) {
     nvals <- length(data$date)
     if (nvals >= 10) { # if the series has less than 10 data points, no plot is shown
       valid <- TRUE
-
       # fill in missing dates with 0 for net_sent, words and documents
       st <- as.POSIXct(min(input$dates2[1]), format = "%Y-%m-%d")
       end <- as.POSIXct(max(input$dates2[2]), format = "%Y-%m-%d")
       date <- as.Date(seq.POSIXt(st, end, by = "day"))
-
       fill <- data[1, 2:ncol(data)]
       fill$net_sent_full <- 0
       fill$words <- fill$documents <- NA
-
       oldIn <- date %in% data$date
-
       dataNew <- merge(as.data.table(date), data, by = "date", all = TRUE)
       dataNew[!oldIn, 2:ncol(dataNew)] <- fill
-
       data <- dataNew
-
       # normalize entire series if option for normalisation is TRUE
       if (input$normalised2) {
         norm <- (data$net_sent_full - mean(data$net_sent_full, na.rm = TRUE)) / sd(data$net_sent_full, na.rm = TRUE)
         data[, "net_sent_full" := norm]
       }
-
       nSMA <- as.integer(input$nSMA2)
       data[, "sma" := SMA(data$net_sent_full, n = nSMA)]
-
     } else {
       nvals <- docs <- words <- 0 # in case data is empty
       valid <- FALSE
@@ -248,15 +242,12 @@ function(input, output) {
 
   output$nDocs <- renderUI({
     validate(
-      need((length(input$language) > 0 & length(input$lexicon) > 0),
-           "")
+      need(validator(input), "")
     )
-
     # run computeData() once and assign it to selData for later use
     getData <- computeData()
     selData$data <- getData$data
     selData$valid <- getData$valid
-
     validate(
       need(selData$valid == TRUE,
            paste0(""))
@@ -275,8 +266,7 @@ function(input, output) {
 
   output$nWords <- renderUI({
     validate(
-      need((length(input$language) > 0 & length(input$lexicon) > 0),
-           "")
+      need(validator(input), "")
     )
     data <- selData$data
     validate(
@@ -296,17 +286,14 @@ function(input, output) {
   })
 
   output$nDocsFull <- renderUI({
-
     # run computeDataFull() once and assign it to selDataFull for later use
     getData <- computeDataFull()
     selDataFull$data <- getData$data
     selDataFull$valid <- getData$valid
     selDataFull$docs <- getData$docs
     selDataFull$words <- getData$words
-
     validate(
-      need(selDataFull$valid == TRUE,
-           paste0(""))
+      need(all(c(validator2(input), selDataFull$valid == TRUE)), "")
     )
     docs <- selDataFull$docs
     HTML(paste0("<b> Number of documents: </b>",
@@ -320,11 +307,10 @@ function(input, output) {
   })
 
   output$nWordsFull <- renderUI({
-    words <- selDataFull$words
     validate(
-      need(selDataFull$valid == TRUE,
-           paste0(""))
+      need(all(c(validator2(input), selDataFull$valid == TRUE)), "")
     )
+    words <- selDataFull$words
     HTML(paste0("<b> Average words per document: </b>",
                 "<ul>",
                 paste0("<li>",
@@ -337,14 +323,9 @@ function(input, output) {
 
   output$stats <- renderTable({
     validate(
-      need((length(input$language) > 0 & length(input$lexicon) > 0),
-           "Select language, lexicon and topic.")
+      need(all(c(validator(input), selData$valid == TRUE)), "Select proper inputs.")
     )
     data <- selData$data
-    validate(
-      need(selData$valid == TRUE,
-           paste0("Not enough data points.", "\n \n"))
-    )
     if (!as.logical(input$normalised)) {
       stats <- dplyr::summarise(group_by(data, name), sentiment = mean(net_sent))
       names(stats) <- c("Selection", "Mean Sentiment")
@@ -353,11 +334,10 @@ function(input, output) {
   })
 
   output$meanSent <- renderUI({
-    data <- selDataFull$data
     validate(
-      need(selDataFull$valid == TRUE,
-           paste0("Not enough data points.", "\n \n"))
+      need(all(c(validator2(input), selDataFull$valid == TRUE)), paste0("Select proper inputs.", "\n \n"))
     )
+    data <- selDataFull$data
     if (!as.logical(input$normalised2)) {
       HTML(paste0("<b> Mean Sentiment: </b> ",
                 round(mean(data$net_sent_full, na.rm= TRUE), 4)),
@@ -366,20 +346,18 @@ function(input, output) {
   })
 
   output$plot <- renderPlot({
-    timeGap <- input$dates[2] - input$dates[1]
     validate(
-      need(timeGap > 0,
-           "Select an appropriate time interval.")
-    )
-    validate(
-      need(selData$valid == TRUE,
-          paste0("There are too few data points (less than 10 available days) for at least one of the
-                 intended sentiment indices.",
-                 "\n \n",
-                 "Try out a different combination of parameters."))
+      need(all(c(validator(input), selData$valid == TRUE)),
+           paste0("You probably made one ore more wrong parameter choices. Potential problems are:", "\n",
+                  "- select at least one input language and one input lexicon", "\n",
+                  "- the minimum number of words and documents need to be above zero", "\n", 
+                  "- the moving average period needs to be above zero", "\n",
+                  "- there might be too few data points (less than 10 available days) for at least one of the indices", "\n",
+                  "\n",
+                  "Try out a different combination of parameters and make those time series pop up!"))
     )
     data <- selData$data
-    p1 <- plot_sent(data, input$dots, timeGap)
+    p1 <- plot_sent(data, input$dots, timeGap = input$dates[2] - input$dates[1])
     data$documents[is.na(data$documents)] <- 0
     dataCol <- rbind(data[language == "nl" & lexicon == unique(lexicon)[1], ],
                      data[language == "fr" & lexicon == unique(lexicon)[1], ])
@@ -396,19 +374,17 @@ function(input, output) {
   })
 
   output$plotFull <- renderPlot({
-    timeGap <- input$dates2[2] - input$dates2[1]
     validate(
-      need(timeGap > 0,
-           "Select an appropriate time interval.")
-    )
-    validate(
-      need(selDataFull$valid == TRUE,
-           paste0("There are too few data points (less than 10 available days) for the intended sentiment index.",
-                  "\n \n",
-                  "Try out a different combination of parameters."))
+      need(all(c(validator2(input), selDataFull$valid == TRUE)),
+           paste0("You probably made one ore more wrong parameter choices. Potential problems are:", "\n",
+                  "- the minimum number of words and documents need to be above zero", "\n", 
+                  "- the moving average period needs to be above zero", "\n",
+                  "- there might be too few data points (less than 10 available days) for at least one of the indices", "\n",
+                  "\n",
+                  "Try out a different combination of parameters and make that global time series pop up!"))
     )
     data <- selDataFull$data
-    p1 <- plot_sent(data, input$dots2, timeGap, type = "full")
+    p1 <- plot_sent(data, input$dots2, timeGap = input$dates2[2] - input$dates2[1], type = "full")
     data$documents[is.na(data$documents)] <- 0
     data$col = "col"
     p2 <- plot_docs(data, color = "col")
@@ -458,8 +434,8 @@ function(input, output) {
   output$analysis <- renderUI({
 
     HTML(paste0("Constructing a time series of textual sentiment is only the first step, extracting information from it is what 
-                counts. Significant statistical analysis is required to get the most out of the observed evolution and the level 
-                of textual sentiment. Elements of this analysis are:",
+                counts. Significant statistical analysis is required to get the most out of the observed evolution and the 
+                level of textual sentiment. Elements of this analysis are:",
                 "<ul>",
                 "<li> The disparity in number of texts is apparent. During and shortly after important events,
                 the number of documents is clearly higher. How does the number of news articles spread out to the sentiment
@@ -607,13 +583,5 @@ function(input, output) {
     ))
 
   }, deleteFile = FALSE)
-  output$news4 <- renderUI({
-
-    HTML(paste0("Swissuniversities funding for Sentometrics research of Keven Bluteau"),
-         renderUI({
-           a(" Link", href="https://www.linkedin.com/feed/update/urn:li:activity:6276875594202386432", target = "_blank")
-           })
-         )
-  })
 }
 
