@@ -13,8 +13,6 @@ library(grid)
 library(gridExtra)
 library(feather)
 
-# extrafont::loadfonts(device = "win", quiet = TRUE)
-
 plot_sent <- function(data, dots, timeGap, type = "multi") {
   if (type == "multi") p <- ggplot(data = data, aes(x = date, y = net_sent, color = name))
   else if (type == "full") p <- ggplot(data = data, aes(x = date, y = net_sent_full))
@@ -68,7 +66,6 @@ out <- as.data.table(feather::read_feather("OUT.feather"))
 function(input, output) {
   computeData <- reactive({
     data <- out[keyword %in% input$keywords, ] # selected topic
-
     if (length(input$desk) > 0) {
       if (length(input$language) == 2) {
         desks <- unlist(strsplit(input$desk, " "))
@@ -78,7 +75,6 @@ function(input, output) {
       }
       data <- data[desk %in% desks, ]
     }
-
     data <- data[word_count >= input$minWords, ] # selection based on minimum words input
     data <- data[, list(net_sent = sum(net_sent, na.rm = TRUE), # average net sentiment score
                         words = sum(word_count), # total number of words
@@ -89,7 +85,6 @@ function(input, output) {
     data <- data[date >= input$dates[1] & date <= input$dates[2], ] # selection based on time frame input
     data <- data[documents >= input$minDocs, ][order(lexicon, language, date)] # selection based on minimum documents input
     data[, "name" := paste0(data$lexicon, " (", data$language, ")")]
-
     if (nrow(data) > 0) {
       nvals <- data[, list(n = length(net_sent)), by = list(lexicon, language)]$n
       # fill in missing dates with 0 for net_sent, words and documents
@@ -111,7 +106,6 @@ function(input, output) {
     } else {
       nvals <- 0 # in case data is empty
     }
-
     if (any(nvals < 10)) { # if at least one of the series has less than 50 data points, no plot is shown
       valid <- FALSE
     } else {
@@ -126,7 +120,6 @@ function(input, output) {
       sma <- data[, list(vals = SMA(net_sent, n = nSMA)), by = list(lexicon, language)]
       data[, "sma" := sma$vals]
     }
-
     return(list(data = data, valid = valid))
   })
 
@@ -140,12 +133,10 @@ function(input, output) {
     data <- data[date >= input$dates2[1] & date <= input$dates2[2], ][order(lexicon, language)]
     data[, "name" := paste0(data$lexicon, " (", data$language, ")")]
     data <- data[documents >= input$minDocs2, ]
-
     if (nrow(data) > 0) {
       docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
       words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
     }
-
     # add columns for language and lexicon based on weight (two user inputs)
     weightsLex <- rep(input$wLex / 100, nrow(data)) # General
     weightsLex[data$lexicon == "Financial"] <- 1 - (input$wLex / 100)
@@ -153,13 +144,11 @@ function(input, output) {
     weightsLang[data$language == "nl"] <- 1 - (input$wLan / 100)
     data[, "weightsLex" := weightsLex]
     data[, "weightsLang" := weightsLang]
-
     # take the weighted sum sentiment per date to obtain fully aggregated sentiment time series
     data <- data[, list(net_sent_full = sum(net_sent * weightsLex * weightsLang, na.rm = TRUE),
                         documents = sum(documents, na.rm = TRUE) / 2,
                         words = sum(words, na.rm = TRUE) / 2),
                  by = list(date)][order(date)]
-
     nvals <- length(data$date)
     if (nvals >= 10) { # if the series has less than 10 data points, no plot is shown
       valid <- TRUE
@@ -185,10 +174,10 @@ function(input, output) {
       nvals <- docs <- words <- 0 # in case data is empty
       valid <- FALSE
     }
-
     return(list(data = data, valid = valid, docs = docs, words = words))
   })
 
+  # initialize reactive values
   selData <- reactiveValues()
   selDataFull <- reactiveValues()
 
@@ -400,7 +389,6 @@ function(input, output) {
   })
 
   output$methodology <- renderUI({
-
     HTML(paste0("<p> The methodology to obtain the displayed textual sentiment time series
                 can be explained in brief by below series of steps:",
                 "<ol>",
@@ -432,7 +420,6 @@ function(input, output) {
   })
 
   output$analysis <- renderUI({
-
     HTML(paste0("Constructing a time series of textual sentiment is only the first step, extracting information from it is what 
                 counts. Significant statistical analysis is required to get the most out of the observed evolution and the 
                 level of textual sentiment. Elements of this analysis are:",
@@ -486,102 +473,80 @@ function(input, output) {
   )
 
   output$boudt <- renderImage({
-
     return(list(
       src = "images/boudt.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$ardia <- renderImage({
-
     return(list(
       src = "images/ardia.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$bluteau <- renderImage({
-
     return(list(
       src = "images/bluteau.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$borms <- renderImage({
-
     return(list(
       src = "images/borms.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$wuytack <- renderImage({
-
     return(list(
       src = "images/wuytack.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$hartmann <- renderImage({
-
     return(list(
       src = "images/hartmann.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$thewissen <- renderImage({
-
     return(list(
       src = "images/thewissen.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$algaba <- renderImage({
-
     return(list(
       src = "images/algaba.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$torsin <- renderImage({
-
     return(list(
       src = "images/torsin.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$linkedinA <- renderImage({
-
     return(list(
       src = "images/linkedin.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 
   output$linkedinB <- renderImage({
-
     return(list(
       src = "images/linkedin.jpg",
       filetype = "image/jpeg"
     ))
-
   }, deleteFile = FALSE)
 }
 

@@ -10,8 +10,6 @@ library(data.table)
 library(dplyr)
 library(TTR)
 
-# extrafont::loadfonts(device = "win", quiet = TRUE)
-
 inputs <- function() {
   wellPanel(fluidRow(
     column(
@@ -65,7 +63,7 @@ navbarPage(
         font-size: 12px;
         }"
       )
-      ),
+    ),
     div(style = "font-size: 11px; padding-top: 0px",
         verticalLayout(
           fluidRow(column(
@@ -207,10 +205,10 @@ navbarPage(
                           ".exp{background-color:white;} .exp{color: black;}
                           .exp{font-size: 9px;} .exp{padding: 4px}"
                         )
-                        )
                       )
                     )
-                  ),
+                  )
+                ),
                 column(
                   width = 2,
                   div(
@@ -220,198 +218,198 @@ navbarPage(
                     uiOutput("nWordsFull")
                   )
                 )
-                )
+              )
               
-          ),
-          tabPanel(
-            "Multiple Indices",
-            fluidRow(div(
-              style = "font-weight: bold",
-              column(width = 3,
-                     tags$h4("Parameters")),
-              column(width = 7,
-                     tags$h4("Textual Sentiment Indices")),
-              column(width = 2,
-                     tags$h4("Statistics"))
-            )),
-            fluidRow(
-              column(
-                width = 3,
-                inputs(),
-                div(
-                  column(
-                    width = 5,
-                    radioButtons(
-                      "normalised",
-                      "Normalisation",
-                      c("Yes" = TRUE,
-                        "No" = FALSE),
-                      inline = TRUE
-                    )
-                  ),
-                  column(
-                    width = 7,
-                    numericInput(
-                      "minWords",
-                      "Min. Words per Document",
-                      value = 150,
-                      step = 10,
-                      width = "90%"
-                    )
-                  )
-                ),
-                div(
-                  column(
-                    width = 5,
-                    radioButtons(
-                      "dots",
-                      "Show Points",
-                      c("Yes" = "1",
-                        "No" = "0"),
-                      selected = "0",
-                      inline = TRUE
-                    )
-                  ),
-                  column(
-                    width = 7,
-                    numericInput(
-                      "minDocs",
-                      "Min. Documents per Day",
-                      value = 3,
-                      step = 1,
-                      width = "90%"
-                    )
-                  )
-                ),
-                div(column(
-                  offset = 5,
-                  width = 7,
-                  numericInput(
-                    "nSMA",
-                    "Moving Average Period",
-                    value = 90,
-                    min = 5,
-                    max = 180,
-                    width = "90%"
-                  )
-                ))
-              ),
-              column(
-                width = 7,
-                div(style = "position: relative",
-                    plotOutput("plot")),
-                div(
-                  column(
-                    width = 6,
-                    dateRangeInput(
-                      "dates",
-                      "Select Time Horizon",
-                      min = "2010-01-01",
-                      max = "2016-12-31",
-                      start = "2010-01-01",
-                      end = "2016-12-31",
-                      format = "dd-mm-yyyy"
-                    )
-                  ),
-                  column(
-                    offset = 4,
-                    width = 2,
-                    downloadButton('export',
-                                   'Download Time Series', class = "exp"),
-                    tags$head(
-                      tags$style(
-                        ".exp{background-color:white;} .exp{color: black;}
-                        .exp{font-size: 9px;} .exp{padding: 4px}"
+            ),
+            tabPanel(
+              "Multiple Indices",
+              fluidRow(div(
+                style = "font-weight: bold",
+                column(width = 3,
+                       tags$h4("Parameters")),
+                column(width = 7,
+                       tags$h4("Textual Sentiment Indices")),
+                column(width = 2,
+                       tags$h4("Statistics"))
+              )),
+              fluidRow(
+                column(
+                  width = 3,
+                  inputs(),
+                  div(
+                    column(
+                      width = 5,
+                      radioButtons(
+                        "normalised",
+                        "Normalisation",
+                        c("Yes" = TRUE,
+                          "No" = FALSE),
+                        inline = TRUE
                       )
+                    ),
+                    column(
+                      width = 7,
+                      numericInput(
+                        "minWords",
+                        "Min. Words per Document",
+                        value = 150,
+                        step = 10,
+                        width = "90%"
                       )
                     )
-                  )
-                ),
-              column(
-                width = 2,
-                div(
-                  style = "font-size: 100%",
-                  tableOutput("stats"),
-                  uiOutput("nDocs"),
-                  uiOutput("nWords")
-                )
-              )
-              )
-          ),
-          tabPanel(
-            "Influential Articles",
-            fluidRow(div(style = "font-weight: bold",
-                         column(
-                           width = 4,
-                           tags$h4("Parameters")
-                         ))),
-            fluidRow(
-              column(
-                width = 4,
-                numericInput(
-                  "minWords3",
-                  "Min. Words per Document",
-                  value = 150,
-                  step = 10,
-                  width = "90%"
-                )
-              ),
-              column(
-                width = 4,
-                numericInput(
-                  "nLeads",
-                  "Number of Articles",
-                  value = 5,
-                  step = 1,
-                  width = "90%"
-                )
-              ),
-              div(style = "padding-top: 0px",
-                  column(
-                    width = 3,
-                    dateRangeInput(
-                      "dates3",
-                      "Select Time Horizon",
-                      min = "2010-01-01",
-                      max = "2016-12-31",
-                      start = "2010-01-01",
-                      end = "2016-12-31",
-                      format = "dd-mm-yyyy"
+                  ),
+                  div(
+                    column(
+                      width = 5,
+                      radioButtons(
+                        "dots",
+                        "Show Points",
+                        c("Yes" = "1",
+                          "No" = "0"),
+                        selected = "0",
+                        inline = TRUE
+                      )
+                    ),
+                    column(
+                      width = 7,
+                      numericInput(
+                        "minDocs",
+                        "Min. Documents per Day",
+                        value = 3,
+                        step = 1,
+                        width = "90%"
+                      )
+                    )
+                  ),
+                  div(column(
+                    offset = 5,
+                    width = 7,
+                    numericInput(
+                      "nSMA",
+                      "Moving Average Period",
+                      value = 90,
+                      min = 5,
+                      max = 180,
+                      width = "90%"
                     )
                   ))
+                ),
+                column(
+                  width = 7,
+                  div(style = "position: relative",
+                      plotOutput("plot")),
+                  div(
+                    column(
+                      width = 6,
+                      dateRangeInput(
+                        "dates",
+                        "Select Time Horizon",
+                        min = "2010-01-01",
+                        max = "2016-12-31",
+                        start = "2010-01-01",
+                        end = "2016-12-31",
+                        format = "dd-mm-yyyy"
+                      )
+                    ),
+                    column(
+                      offset = 4,
+                      width = 2,
+                      downloadButton('export',
+                                     'Download Time Series', class = "exp"),
+                      tags$head(
+                        tags$style(
+                          ".exp{background-color:white;} .exp{color: black;}
+                        .exp{font-size: 9px;} .exp{padding: 4px}"
+                        )
+                      )
+                    )
+                  )
+                ),
+                column(
+                  width = 2,
+                  div(
+                    style = "font-size: 100%",
+                    tableOutput("stats"),
+                    uiOutput("nDocs"),
+                    uiOutput("nWords")
+                  )
+                )
+              )
             ),
-            fluidRow(
-              div(
-                column(width = 12,
-                       tags$h4("French Articles")),
-                column(width = 6,
-                       tags$h5("General Lexicon")),
-                column(width = 6,
-                       tags$h5("Financial Lexicon")),
-                column(width = 6,
-                       tableOutput("GenFR")),
-                column(width = 6,
-                       tableOutput("FinFR"))
+            tabPanel(
+              "Influential Articles",
+              fluidRow(div(style = "font-weight: bold",
+                           column(
+                             width = 4,
+                             tags$h4("Parameters")
+                           ))),
+              fluidRow(
+                column(
+                  width = 4,
+                  numericInput(
+                    "minWords3",
+                    "Min. Words per Document",
+                    value = 150,
+                    step = 10,
+                    width = "90%"
+                  )
+                ),
+                column(
+                  width = 4,
+                  numericInput(
+                    "nLeads",
+                    "Number of Articles",
+                    value = 5,
+                    step = 1,
+                    width = "90%"
+                  )
+                ),
+                div(style = "padding-top: 0px",
+                    column(
+                      width = 3,
+                      dateRangeInput(
+                        "dates3",
+                        "Select Time Horizon",
+                        min = "2010-01-01",
+                        max = "2016-12-31",
+                        start = "2010-01-01",
+                        end = "2016-12-31",
+                        format = "dd-mm-yyyy"
+                      )
+                    ))
               ),
-              div(
-                column(width = 12,
-                       tags$h4("Dutch Articles")),
+              fluidRow(
                 div(
+                  column(width = 12,
+                         tags$h4("French Articles")),
                   column(width = 6,
                          tags$h5("General Lexicon")),
                   column(width = 6,
                          tags$h5("Financial Lexicon")),
                   column(width = 6,
-                         tableOutput("GenNL")),
+                         tableOutput("GenFR")),
                   column(width = 6,
-                         tableOutput("FinNL"))
+                         tableOutput("FinFR"))
+                ),
+                div(
+                  column(width = 12,
+                         tags$h4("Dutch Articles")),
+                  div(
+                    column(width = 6,
+                           tags$h5("General Lexicon")),
+                    column(width = 6,
+                           tags$h5("Financial Lexicon")),
+                    column(width = 6,
+                           tableOutput("GenNL")),
+                    column(width = 6,
+                           tableOutput("FinNL"))
+                  )
                 )
               )
             )
           )
-        )
-    ))
-      ),
+        ))
+  ),
   tabPanel(
     "Methodology",
     tags$style(type = "text/css"),
@@ -493,8 +491,8 @@ navbarPage(
                      tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
                      the Vrije Universiteit Amsterdam."
                    )
-                   )
-                   )),
+                 )
+               )),
         column(width = 4,
                div(
                  column(width = 3,
@@ -509,8 +507,8 @@ navbarPage(
                      Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
                      who has been working with Prof. Boudt for close to a decade."
                    )
-                   )
-                   )),
+                 )
+               )),
         column(width = 4,
                div(
                  column(
@@ -525,9 +523,9 @@ navbarPage(
                      with his PhD to the analysis of corporate information, and has a solid knowledge of text mining and
                      statistical textual analysis techniques."
                    )
-                   )
-                   ))
-                 ),
+                 )
+               ))
+      ),
       div(
         column(width = 3,
                div(column(
@@ -562,8 +560,8 @@ navbarPage(
                      "Keven Bluteau is a PhD student, working primarily on how to use textual sentiment analysis to forecast
                      economic and financial variables."
                    )
-                   )
-                 )),
+                 )
+               )),
         column(width = 3,
                div(
                  column(width = 3,
@@ -577,8 +575,8 @@ navbarPage(
                      "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the sentometrics software
                      package during a Google Summer of Code project."
                    )
-                   )
-                 )),
+                 )
+               )),
         column(width = 3,
                div(
                  column(width = 3,
@@ -592,8 +590,8 @@ navbarPage(
                      "Andres Algaba is a PhD student who studies the time variation in financial time series, including those
                      who are sentiment-based."
                    )
-                   )
-                 )),
+                 )
+               )),
         column(width = 3,
                div(
                  column(width = 3,
@@ -607,10 +605,10 @@ navbarPage(
                      "Wouter Torsin is a PhD student who has been investigating the tone in a large amount of corporate
                      publications."
                    )
-                   )
-                 ))
-               )
-               ),
+                 )
+               ))
+      )
+    ),
     fluidRow(column(width = 12,
                     h3(
                       "Industrial Partners"
@@ -639,8 +637,8 @@ navbarPage(
                           working at for over 15 years. He is convinced about the positive impact a trustworthy calculation of
                           textual sentiment will have on extending media analysis services to Belga's clients."
                         )
-                        )
-                        )),
+                      )
+                    )),
              column(width = 4,
                     div(
                       column(
@@ -656,9 +654,9 @@ navbarPage(
                           explicit incorporation of sentiment expressed in texts in investment decisions and products, which
                           he himself believes has strong potential."
                         )
-                        )
-                        )))
-                        ),
+                      )
+                    )))
+  ),
   tabPanel(
     "News",
     tags$style(type = "text/css"),
