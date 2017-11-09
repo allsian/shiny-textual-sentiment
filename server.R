@@ -447,8 +447,8 @@ function(input, output) {
                 Part of this includes improving the combination of different types of articles (in different languages,
                 from different sources, in different writing styles, and alike). </li>",
                 "</ul>",
-                "<p> Follow the team's research to stay up-to-date on the application of econometrics to 
-                textual sentiment! </p>"
+                "<p> <b> Follow the team's research to stay up-to-date on how we apply econometrics 
+                to textual sentiment! </b> </p>"
                 ))
   })
 
