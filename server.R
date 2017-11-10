@@ -60,6 +60,18 @@ validator2 <- function(inp) {
   return(v)
 }
 
+get_leads <- function(out, inp, lang, lex) {
+  data <- out[keyword %in% inp$keywords & language == lang, ]
+  data <- data[word_count >= inp$minWords3, ]
+  data <- data[date >= inp$dates3[1] & date <= inp$dates3[2], ]
+  data[, "net_sent_abs" := abs(data$net_sent)]
+  topLeads <- data[order(-net_sent_abs)]
+  top <- topLeads[lexicon == lex, c("net_sent", "date", "lead")][1:inp$nLeads, ]
+  top$date <- as.character(top$date)
+  colnames(top) <- c("Score", "Date", "Article's Lead")
+  return(top)
+}
+
 # load input data with all relevant information, including sentiment scores (data not included in the repo!)
 out <- as.data.table(feather::read_feather("OUT.feather"))
 
@@ -182,51 +194,19 @@ function(input, output) {
   selDataFull <- reactiveValues()
 
   output$GenFR <- renderTable({
-    data <- out[keyword %in% input$keywords & language == "fr", ]
-    data <- data[word_count >= input$minWords3, ]
-    data <- data[date >= input$dates3[1] & date <= input$dates3[2], ]
-    data[, "net_sent_abs" := abs(data$net_sent)]
-    topLeads <- data[order(-net_sent_abs)]
-    topGen <- topLeads[lexicon == "General", c("net_sent", "date", "lead")][1:input$nLeads, ]
-    topGen$date <- as.character(topGen$date)
-    colnames(topGen) <- c("Score", "Date", "Article's Lead")
-    return(topGen)
+    get_leads(out, input, "fr", "General")
   })
 
   output$FinFR <- renderTable({
-    data <- out[keyword %in% input$keywords & language == "fr", ]
-    data <- data[word_count >= input$minWords3, ]
-    data <- data[date >= input$dates3[1] & date <= input$dates3[2], ]
-    data[, "net_sent_abs" := abs(data$net_sent)]
-    topLeads <- data[order(-net_sent_abs)]
-    topFin <- topLeads[lexicon == "Financial", c("net_sent", "date", "lead")][1:input$nLeads, ]
-    topFin$date <- as.character(topFin$date)
-    colnames(topFin) <- c("Score", "Date", "Article's Lead")
-    return(topFin)
+    get_leads(out, input, "fr", "Financial")
   })
 
   output$GenNL <- renderTable({
-    data <- out[keyword %in% input$keywords & language == "nl", ]
-    data <- data[word_count >= input$minWords3, ]
-    data <- data[date >= input$dates3[1] & date <= input$dates3[2], ]
-    data[, "net_sent_abs" := abs(data$net_sent)]
-    topLeads <- data[order(-net_sent_abs)]
-    topGen <- topLeads[lexicon == "General", c("net_sent", "date", "lead")][1:input$nLeads, ]
-    topGen$date <- as.character(topGen$date)
-    colnames(topGen) <- c("Score", "Date", "Article's Lead")
-    return(topGen)
+    get_leads(out, input, "nl", "General")
   })
 
   output$FinNL <- renderTable({
-    data <- out[keyword %in% input$keywords & language == "nl", ]
-    data <- data[word_count >= input$minWords3, ]
-    data <- data[date >= input$dates3[1] & date <= input$dates3[2], ]
-    data[, "net_sent_abs" := abs(data$net_sent)]
-    topLeads <- data[order(-net_sent_abs)]
-    topFin <- topLeads[lexicon == "Financial", c("net_sent", "date", "lead")][1:input$nLeads, ]
-    topFin$date <- as.character(topFin$date)
-    colnames(topFin) <- c("Score", "Date", "Article's Lead")
-    return(topFin)
+    get_leads(out, input, "nl", "Financial")
   })
 
   output$nDocs <- renderUI({
