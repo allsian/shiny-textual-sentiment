@@ -1,17 +1,19 @@
 
 library(shiny)
+library(shinythemes)
 library(ggplot2)
 library(ggthemes)
-library(data.table)
-library(shinythemes)
-library(extrafont)
-library(dplyr)
-library(scales)
-library(TTR)
 library(grDevices)
 library(grid)
 library(gridExtra)
+library(extrafont)
 library(feather)
+library(data.table)
+library(dplyr)
+library(scales)
+library(TTR)
+
+############################
 
 plot_sent <- function(data, dots, timeGap, type = "multi") {
   if (type == "multi") p <- ggplot(data = data, aes(x = date, y = net_sent, color = name))
@@ -42,7 +44,7 @@ plot_docs <- function(data, color = "language") {
   return(p)
 }
 
-validator <- function(inp) {
+validator <- function(inp) { 
   v <- (length(inp$language) > 0 
   & length(inp$lexicon) > 0 
   & as.integer(inp$nSMA) > 0 
@@ -52,7 +54,7 @@ validator <- function(inp) {
   return(v)
 }
 
-validator2 <- function(inp) {
+validator2 <- function(inp) { # suffix 2 generally indicates first tab (fully aggregated time series)
   v <- (as.integer(inp$nSMA2) > 0 
         & as.integer(inp$minWords2) > 0 
         & as.integer(inp$minDocs2) > 0
@@ -71,6 +73,31 @@ get_leads <- function(out, inp, lang, lex) {
   colnames(top) <- c("Score", "Date", "Article's Lead")
   return(top)
 }
+
+make_grid <- function(top, bottom) {
+  gA <- ggplot_gtable(ggplot_build(top))
+  gB <- ggplot_gtable(ggplot_build(bottom))
+  maxWidth = grid::unit.pmax(gA$widths, gB$widths)
+  gA$widths <- as.list(maxWidth)
+  gB$widths <- as.list(maxWidth)
+  grid.newpage()
+  grid.arrange(arrangeGrob(gA, gB, nrow = 2, heights = c(.3, .7)))
+}
+
+fill_dates <- function(data, dates, type) {
+  st <- as.POSIXct(min(dates[1]), format = "%Y-%m-%d")
+  end <- as.POSIXct(max(dates[2]), format = "%Y-%m-%d")
+  date <- as.Date(seq.POSIXt(st, end, by = "day"))
+  fill <- data[1, 2:ncol(data)]
+  fill[, (type) := 0]
+  fill[, c("words", "documents") := NA]
+  oldIn <- date %in% data$date
+  dataNew <- merge(as.data.table(date), data, by = "date", all = TRUE)
+  dataNew[!oldIn, 2:ncol(dataNew)] <- fill
+  return(dataNew)
+}
+
+############################
 
 # load input data with all relevant information, including sentiment scores (data not included in the repo!)
 out <- as.data.table(feather::read_feather("OUT.feather"))
@@ -103,21 +130,11 @@ function(input, output) {
       dataNew <- c()
       for (nm in unique(data$name)) {
         dt <- subset(data, name == nm)
-        st <- as.POSIXct(min(input$dates[1]), format = "%Y-%m-%d")
-        end <- as.POSIXct(max(input$dates[2]), format = "%Y-%m-%d")
-        date <- as.Date(seq.POSIXt(st, end, by = "day"))
-        fill <- dt[1, 2:ncol(dt)]
-        fill[, "net_sent" := 0]
-        fill[, c("words", "documents") := NA]
-        oldIn <- date %in% dt$date
-        dtNew <- merge(as.data.table(date), dt, by = "date", all = TRUE)
-        dtNew[!oldIn, 2:ncol(dtNew)] <- fill
+        dtNew <- fill_dates(dt, input$dates, "net_sent")
         dataNew <- rbind(dataNew, dtNew)
       }
       data <- dataNew
-    } else {
-      nvals <- 0 # in case data is empty
-    }
+    } else nvals <- 0 # in case data is empty
     if (any(nvals < 10)) { # if at least one of the series has less than 50 data points, no plot is shown
       valid <- FALSE
     } else {
@@ -156,7 +173,7 @@ function(input, output) {
     weightsLang[data$language == "nl"] <- 1 - (input$wLan / 100)
     data[, "weightsLex" := weightsLex]
     data[, "weightsLang" := weightsLang]
-    # take the weighted sum sentiment per date to obtain fully aggregated sentiment time series
+    # take the weighted sum of sentiment per date to obtain fully aggregated sentiment time series
     data <- data[, list(net_sent_full = sum(net_sent * weightsLex * weightsLang, na.rm = TRUE),
                         documents = sum(documents, na.rm = TRUE) / 2,
                         words = sum(words, na.rm = TRUE) / 2),
@@ -164,17 +181,8 @@ function(input, output) {
     nvals <- length(data$date)
     if (nvals >= 10) { # if the series has less than 10 data points, no plot is shown
       valid <- TRUE
-      # fill in missing dates with 0 for net_sent, words and documents
-      st <- as.POSIXct(min(input$dates2[1]), format = "%Y-%m-%d")
-      end <- as.POSIXct(max(input$dates2[2]), format = "%Y-%m-%d")
-      date <- as.Date(seq.POSIXt(st, end, by = "day"))
-      fill <- data[1, 2:ncol(data)]
-      fill$net_sent_full <- 0
-      fill$words <- fill$documents <- NA
-      oldIn <- date %in% data$date
-      dataNew <- merge(as.data.table(date), data, by = "date", all = TRUE)
-      dataNew[!oldIn, 2:ncol(dataNew)] <- fill
-      data <- dataNew
+      # fill in missing dates with 0 for net_sent_full, words and documents
+      data <- fill_dates(data, input$dates2, "net_sent_full")
       # normalize entire series if option for normalisation is TRUE
       if (input$normalised2) {
         norm <- (data$net_sent_full - mean(data$net_sent_full, na.rm = TRUE)) / sd(data$net_sent_full, na.rm = TRUE)
@@ -242,8 +250,7 @@ function(input, output) {
       need(selData$valid == TRUE,
            paste0(""))
     )
-    words <- dplyr::summarise(group_by(data, name),
-                              n = round(mean(words / documents, na.rm = TRUE), 0))
+    words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
     HTML(paste0("<b> Average words per document: </b>",
                 "<ul>",
                 paste0("<li>",
@@ -331,15 +338,7 @@ function(input, output) {
     dataCol <- rbind(data[language == "nl" & lexicon == unique(lexicon)[1], ],
                      data[language == "fr" & lexicon == unique(lexicon)[1], ])
     p2 <- plot_docs(dataCol)
-    gA <- ggplot_gtable(ggplot_build(p2))
-    gB <- ggplot_gtable(ggplot_build(p1))
-    maxWidth = grid::unit.pmax(gA$widths, gB$widths)
-    gA$widths <- as.list(maxWidth)
-    gB$widths <- as.list(maxWidth)
-    grid.newpage()
-    grid.arrange(
-      arrangeGrob(gA, gB, nrow = 2, heights = c(.3, .7))
-    )
+    make_grid(top = p2, bottom = p1)
   })
 
   output$plotFull <- renderPlot({
@@ -355,17 +354,9 @@ function(input, output) {
     data <- selDataFull$data
     p1 <- plot_sent(data, input$dots2, timeGap = input$dates2[2] - input$dates2[1], type = "full")
     data$documents[is.na(data$documents)] <- 0
-    data$col = "col"
+    data$col <- "col"
     p2 <- plot_docs(data, color = "col")
-    gA <- ggplot_gtable(ggplot_build(p2))
-    gB <- ggplot_gtable(ggplot_build(p1))
-    maxWidth = grid::unit.pmax(gA$widths, gB$widths)
-    gA$widths <- as.list(maxWidth)
-    gB$widths <- as.list(maxWidth)
-    grid.newpage()
-    grid.arrange(
-      arrangeGrob(gA, gB, nrow = 2, heights = c(.3, .7))
-    )
+    make_grid(top = p2, bottom = p1)
   })
 
   output$methodology <- renderUI({

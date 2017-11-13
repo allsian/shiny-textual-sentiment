@@ -1,14 +1,6 @@
 
 library(shiny)
-library(ggplot2)
-library(ggthemes)
 library(shinythemes)
-library(extrafont)
-library(scales)
-library(grDevices)
-library(data.table)
-library(dplyr)
-library(TTR)
 
 inputs <- function() {
   wellPanel(fluidRow(
@@ -572,7 +564,7 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the sentometrics software
+                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics' software
                      package during a Google Summer of Code project."
                    )
                  )
@@ -709,7 +701,7 @@ navbarPage(
              column(width = 12,
                     h4(helpText(
                       a(
-                        "Release of 'sentometrics' R package.",
+                        "Release of R package 'sentometrics'.",
                         href = "https://sborms.github.io/sentometrics/",
                         target = "_blank"
                       )
