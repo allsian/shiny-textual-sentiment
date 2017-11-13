@@ -564,8 +564,8 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics' software
-                     package during a Google Summer of Code project."
+                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics'
+                     software package during a Google Summer of Code project."
                    )
                  )
                )),
