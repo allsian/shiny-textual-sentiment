@@ -77,7 +77,7 @@ get_leads <- function(out, inp, lang, lex) {
 make_grid <- function(top, bottom) {
   gA <- ggplot_gtable(ggplot_build(top))
   gB <- ggplot_gtable(ggplot_build(bottom))
-  maxWidth = grid::unit.pmax(gA$widths, gB$widths)
+  maxWidth <- grid::unit.pmax(gA$widths, gB$widths)
   gA$widths <- as.list(maxWidth)
   gB$widths <- as.list(maxWidth)
   grid.newpage()
