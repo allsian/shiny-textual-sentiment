@@ -364,27 +364,27 @@ function(input, output) {
                 can be explained in brief by below series of steps:",
                 "<ol>",
                 "<li> Assemble a selection of texts (a corpus) </li>",
-                "<li> Select the subcorpus texts of interest, per topic:" ,
+                "<li> Select, per topic, the texts of interest to form a subcorpus:" ,
                 "<ul> <li> Based on keyword tag (e.g. 'VOETBAL' or 'FOOTBALL') </li>
                       <li> Based on category tag (e.g. 'POL' for politics) </li>
                       <li> Based on language tag </li> </ul> </li>",
-                "<li> Match all words in each text to word lists (lexicons) </li>",
-                "<li> Assign a sentiment score per text </li>",
-                "<li> Aggregate sentiment scores per text for every date  to obtain a time series </li>",
+                "<li> Match for each text all words to a word list (lexicon) and assign a textual sentiment score </li>",
+                "<li> Aggregate the sentiment scores of all texts per date to obtain a time series </li>",
+                "<li> Smooth the time series </li>",
                 "</ol>",
-                "<p> A lexicon is a set of words with an associated polarity. There circulate
+                "<p> A lexicon is a collection of words with associated polarities. There circulate
                 several lexicons in text mining research, primarily in English. Most often, these
                 lexicons are general in nature, but some are domain-specific. In this setting, we
-                have used an English financial lexicon, translated to both French and Dutch, a
+                have used an originally English financial lexicon, translated to both French and Dutch, a
                 general French lexicon, and a general English lexicon, translated to Dutch. </p>",
                 "<p> Sentiment for a given text is calculated based on the bag-of-words model. Every text is decomposed
                 into words and matched against a lexicon. The polarity scores of words present in every text are summed,
                 weighted by the proportion of the particular polar words with respect to the total number of words per text.
-                This results into a sentiment score for each text. Sentiment on a single date is composed by averaging
-                sentiment from all texts on that day. More complex sentiment analsis exists in which the potential impact of
-                surrounding words near the polarized word is accounted for. This is the most accurate approach, yet
+                This results into a sentiment score for each text. Sentiment on a single day equals the average of the
+                sentiment scores from all texts on that day. More complex sentiment analysis exists in which the impact
+                of surrounding words near the polarized word is accounted for. This is the most accurate approach, yet
                 computationally more demanding. As a simple example, 'not bad' would have an initial sentiment value of -1 due
-                to the word 'bad', but this would eventually be reversed because of the presence of the word 'not'. </p>",
+                to the word 'bad', but this is eventually reversed because of the presence of the word 'not'. </p>",
                 "<p> The fully aggregated sentiment index combines all articles in both French and Dutch
                 as well as the different sentiment scores per lexicon. The weight options allow to control
                 for the importance of each language or lexicon. </p>"))
