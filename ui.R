@@ -27,16 +27,16 @@ inputs <- function() {
       )
     ),
     column(width = 4,
-           checkboxGroupInput(
-             "desk",
-             "Desk",
-             c(
-               "Belgium" = "BIN INT",
-               "Abroad" = "BTL EXT",
-               "Sport" = "SPN SPF"
-             ),
-             selected = c()
-           ))
+     checkboxGroupInput(
+       "desk",
+       "Desk",
+       c(
+         "Belgium" = "BIN INT",
+         "Abroad" = "BTL EXT",
+         "Sport" = "SPN SPF"
+       ),
+       selected = c()
+     ))
   ))
 }
 
@@ -46,7 +46,6 @@ navbarPage(
   theme = shinytheme("flatly"),
   tabPanel(
     'Visualisation',
-    
     tags$style(
       type = "text/css",
       HTML(
@@ -71,16 +70,14 @@ navbarPage(
                 "Economy" = "Economy"
               ),
               multiple = FALSE,
-              width = '100%',
+              width = "100%",
               selected = c("Financial")
             )
           )),
           tabsetPanel(
             type = "tabs",
-            
             tabPanel(
               "Single Index",
-              
               fluidRow(div(
                 style = "font-weight: bold",
                 column(width = 3,
@@ -334,7 +331,9 @@ navbarPage(
                            column(
                              width = 4,
                              tags$h4("Parameters")
-                           ))),
+                           )
+                          )
+                       ),
               fluidRow(
                 column(
                   width = 4,
@@ -432,7 +431,8 @@ navbarPage(
     "Team",
     tags$style(type = "text/css"),
     fluidRow(column(width = 12,
-                    h3("Academic Team"))),
+                    h3("Academic Team"))
+             ),
     fluidRow(
       column(width = 4,
              div(
@@ -478,7 +478,7 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Prof. Kris Boudt is an Associate Professor at the <b> Vrije Universiteit Brussel </b> with extensive
+                     "Prof. Kris Boudt is Associate Professor at the <b> Vrije Universiteit Brussel </b> with extensive
                      experience in (financial) econometrics. The past several years, he has been developing statistical
                      tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
                      the Vrije Universiteit Amsterdam."
@@ -495,7 +495,7 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Prof. David Ardia is an Assistant Professor at the Université de Neuchâtel as well as the Université
+                     "Prof. David Ardia is Assistant Professor at the Université de Neuchâtel as well as the Université
                      Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
                      who has been working with Prof. Boudt for close to a decade."
                    )
@@ -511,7 +511,7 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Prof. James Thewissen is an Assistant Professor at the Katholieke Universiteit Leuven. He contributed
+                     "Prof. James Thewissen is Assistant Professor at the Katholieke Universiteit Leuven. He contributed
                      with his PhD to the analysis of corporate information, and has a solid knowledge of text mining and
                      statistical textual analysis techniques."
                    )
