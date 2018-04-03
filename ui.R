@@ -41,9 +41,231 @@ inputs <- function() {
 }
 
 navbarPage(
-  title = "Textual Sentiment Indexation",
+  title = "Sentometrics",
   header = "",
   theme = shinytheme("flatly"),
+  tabPanel(
+    "News",
+    tags$style(type = "text/css"),
+    fluidRow(column(width = 12,
+                    HTML("<b> April 2017 </b>")),
+             column(
+               width = 12,
+               h4(
+                 "Green light for first stage of Innoviris Team Up development of Sentometrics together with Belga and Finvex."
+               )
+             )),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> May 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "Google Summer of Code funding for Samuel Borms to create the R package 'sentometrics'.",
+                        href = "https://summerofcode.withgoogle.com/projects/#5832364795101184",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> May 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "White paper on Sentometrics released on SSRN.",
+                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6274895843879456768",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> June 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "Swissuniversities funding for Sentometrics research of Keven Bluteau.",
+                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6276875594202386432",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> October 2017 </b>")),
+             column(
+               width = 12,
+               h4(
+                 "Innoviris Team Up full funding support granted to Sentometrics in partnership with Belga and Finvex."
+               )
+             )),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML(
+                      "<b> November 2017 </b>"
+                    )),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "Release of R package 'sentometrics'.",
+                        href = "https://sborms.github.io/sentometrics/",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> March 2018 </b>")),
+             column(
+               width = 12,
+               h4(
+                 "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia."
+               )
+             ))
+  ),
+  tabPanel(
+    "Team",
+    tags$style(type = "text/css"),
+    div(style = "text-align: center",
+        column(width = 12,
+               HTML(paste0("<h3><b>Follow the team's research at ", 
+                           "<a href='www.sentometrics.be'>sentometrics.be</a>", 
+                           " to stay up-to-date on how we apply econometrics
+                           to textual sentiment!</b></h3>")))
+               ),
+    fluidRow(column(width = 12,
+                    h3("Academic Team"))
+    ),
+    fluidRow(
+        div(
+          fluidRow(
+          column(width = 4,
+                 div(
+                   column(width = 11,
+                          h4("Kris Boudt (Vrije Universiteit Brussel)"))
+                 )),
+          column(width = 4,
+                 div(
+                   column(width = 11,
+                          h4("David Ardia (Université de Neuchâtel)"))
+                 ))
+        ),
+        fluidRow(
+          column(offset = 0, width = 4,
+                 div(
+                   column(offset = 0,
+                          width = 3,
+                          imageOutput(
+                            "boudt", width = "150px", height = "200px"
+                          )),
+                   column(
+                     offset = 1,
+                     width = 8,
+                     HTML(
+                       "Prof. Kris Boudt is Associate Professor at the Vrije Universiteit Brussel with extensive
+                       experience in (financial) econometrics. The past several years, he has been developing statistical
+                       tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
+                       the Vrije Universiteit Amsterdam."
+                     )
+                     )
+                     )),
+          column(width = 4,
+                 div(
+                   column(offset = 0,
+                          width = 3,
+                          imageOutput(
+                            "ardia", width = "150px", height = "200px"
+                          )),
+                   column(
+                     offset = 1,
+                     width = 8,
+                     HTML(
+                       "Prof. David Ardia is Assistant Professor at the Université de Neuchâtel as well as the Université
+                       Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
+                       who has been working with Prof. Boudt for close to a decade."
+                     )
+                     )
+                     ))
+                   )
+                 )),
+    div(style = "padding: 0px",
+        fluidRow(
+          column(width = 3,
+               div(column(
+                 width = 12,
+                 h4("Keven Bluteau (UniNE/VUB)")
+               ))),
+        column(width = 3,
+               div(column(
+                 width = 12,
+                 h4("Samuel Borms (UniNE/VUB)")
+               ))),
+        column(width = 3,
+               div(column(
+                 width = 12,
+                 h4("Andres Algaba (VUB)")
+               )))
+        ),
+        fluidRow(
+        column(offset = 0, width = 3,
+                 column(width = 3,
+                        imageOutput(
+                          "bluteau", width = "150px", height = "200px"
+                        )),
+                 column(
+                   offset = 1,
+                   width = 8,
+                   HTML(
+                     "Keven Bluteau is a PhD student, working primarily on how to use textual sentiment analysis to forecast
+                     economic and financial variables."
+                   )
+                   )
+                 ),
+          column(width = 3,
+                 column(width = 3,
+                        imageOutput(
+                          "borms", width = "150px", height = "200px"
+                        )),
+                 column(
+                   offset = 1,
+                   width = 8,
+                   HTML(
+                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics'
+                     software package during a Google Summer of Code project."
+                   )
+                   )
+                 ),
+          column(width = 3,
+                 column(width = 3,
+                        imageOutput(
+                          "algaba", width = "150px", height = "200px"
+                        )),
+                 column(
+                   offset = 1,
+                   width = 8,
+                   HTML(
+                     "Andres Algaba is a PhD student who studies the time variation in financial time series, including those
+                     who are sentiment-based."
+                   )
+                   ))
+        )
+    ),
+    div(style = "padding: 0px",
+      column(width = 12,
+                    h3(
+                      "Industrial Partners"
+                    )),
+            column(width = 2,
+                      column(width = 11,
+                             imageOutput(
+                               "belga", width = "150px", height = "200px"
+                             )
+                    )),
+             column(width = 2,
+                      column(
+                        width = 11,
+                        imageOutput("finvex", width = "150px", height = "200px")
+                      )
+             )
+    )
+      ),
   tabPanel(
     'Visualisation',
     tags$style(
@@ -84,7 +306,7 @@ navbarPage(
                        tags$h4("Parameters")),
                 column(width = 7,
                        tags$h4(
-                         "Textual Sentiment Index (Fully Aggregated)"
+                         "Global Textual Sentiment Index"
                        )),
                 column(width = 2,
                        tags$h4("Statistics"))
@@ -99,14 +321,14 @@ navbarPage(
                       "Weight to French Documents (%)",
                       min = 0,
                       max = 100,
-                      value = 50
+                      value = 75
                     ),
                     sliderInput(
                       "wLex",
                       "Weight to the 'General' Lexicon (%)",
                       min = 0,
                       max = 100,
-                      value = 50
+                      value = 25
                     )
                   ),
                   div(
@@ -133,17 +355,7 @@ navbarPage(
                   ),
                   div(
                     column(
-                      width = 5,
-                      radioButtons(
-                        "dots2",
-                        "Show Points",
-                        c("Yes" = "1",
-                          "No" = "0"),
-                        selected = "0",
-                        inline = TRUE
-                      )
-                    ),
-                    column(
+                      offset = 5,
                       width = 7,
                       numericInput(
                         "minDocs2",
@@ -249,17 +461,7 @@ navbarPage(
                   ),
                   div(
                     column(
-                      width = 5,
-                      radioButtons(
-                        "dots",
-                        "Show Points",
-                        c("Yes" = "1",
-                          "No" = "0"),
-                        selected = "0",
-                        inline = TRUE
-                      )
-                    ),
-                    column(
+                      offset = 5,
                       width = 7,
                       numericInput(
                         "minDocs",
@@ -400,312 +602,6 @@ navbarPage(
             )
           )
         ))
-  ),
-  tabPanel(
-    "Methodology",
-    tags$style(type = "text/css"),
-    fluidRow(
-      div(
-        style = "font-weight: bold; font-size: 11px",
-        column(width = 6,
-               wellPanel(
-                 style = "padding: 2px 7px 2px 7px;",
-                 tags$h5("A few words on the methodology employed")
-               )),
-        column(width = 6,
-               wellPanel(
-                 style = "padding: 2px 7px 2px 7px;",
-                 tags$h5("Which analyses are of interest?")
-               ))
-      )
-    ),
-    fluidRow(div(
-      style = "font-size: 12px",
-      column(width = 6,
-             uiOutput("methodology")),
-      column(width = 6,
-             uiOutput("analysis"))
-    ))
-  ),
-  tabPanel(
-    "Team",
-    tags$style(type = "text/css"),
-    fluidRow(column(width = 12,
-                    h3("Academic Team"))
-             ),
-    fluidRow(
-      column(width = 4,
-             div(
-               column(width = 11,
-                      h4("Kris Boudt (Vrije Universiteit Brussel)")),
-               div(style = "padding: 6px 0px 0px 0px",
-                   column(
-                     width = 1,
-                     tags$a(imageOutput(
-                       "linkedinB", width = "25px", height = "25px"
-                     ),
-                     href = "https://www.linkedin.com/in/kris-boudt-44b20313/")
-                   ))
-             )),
-      column(width = 4,
-             div(
-               column(width = 11,
-                      h4("David Ardia (Université de Neuchâtel)")),
-               div(style = "padding: 6px 0px 0px 0px",
-                   column(
-                     width = 1,
-                     tags$a(imageOutput(
-                       "linkedinA", width = "25px", height = "25px"
-                     ),
-                     href = "https://www.linkedin.com/in/davidardia/")
-                   ))
-             )),
-      column(width = 4,
-             div(column(
-               width = 12,
-               h4("James Thewissen (KU Leuven)")
-             )))
-    ),
-    fluidRow(
-      div(
-        column(width = 4,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "boudt", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Prof. Kris Boudt is Associate Professor at the <b> Vrije Universiteit Brussel </b> with extensive
-                     experience in (financial) econometrics. The past several years, he has been developing statistical
-                     tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
-                     the Vrije Universiteit Amsterdam."
-                   )
-                 )
-               )),
-        column(width = 4,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "ardia", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Prof. David Ardia is Assistant Professor at the Université de Neuchâtel as well as the Université
-                     Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
-                     who has been working with Prof. Boudt for close to a decade."
-                   )
-                 )
-               )),
-        column(width = 4,
-               div(
-                 column(
-                   width = 3,
-                   imageOutput("thewissen", width = "150px", height = "200px")
-                 ),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Prof. James Thewissen is Assistant Professor at the Katholieke Universiteit Leuven. He contributed
-                     with his PhD to the analysis of corporate information, and has a solid knowledge of text mining and
-                     statistical textual analysis techniques."
-                   )
-                 )
-               ))
-      ),
-      div(
-        column(width = 3,
-               div(column(
-                 width = 12,
-                 h4("Keven Bluteau (UniNE)")
-               ))),
-        column(width = 3,
-               div(column(
-                 width = 12,
-                 h4("Samuel Borms (UniNE)")
-               ))),
-        column(width = 3,
-               div(column(
-                 width = 12,
-                 h4("Andres Algaba (VUB)")
-               ))),
-        column(width = 3,
-               div(column(
-                 width = 12,
-                 h4("Wouter Torsin (KUL)")
-               ))),
-        column(width = 3,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "bluteau", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Keven Bluteau is a PhD student, working primarily on how to use textual sentiment analysis to forecast
-                     economic and financial variables."
-                   )
-                 )
-               )),
-        column(width = 3,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "borms", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics'
-                     software package during a Google Summer of Code project."
-                   )
-                 )
-               )),
-        column(width = 3,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "algaba", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Andres Algaba is a PhD student who studies the time variation in financial time series, including those
-                     who are sentiment-based."
-                   )
-                 )
-               )),
-        column(width = 3,
-               div(
-                 column(width = 3,
-                        imageOutput(
-                          "torsin", width = "150px", height = "200px"
-                        )),
-                 column(
-                   offset = 1,
-                   width = 8,
-                   HTML(
-                     "Wouter Torsin is a PhD student who has been investigating the tone in a large amount of corporate
-                     publications."
-                   )
-                 )
-               ))
-      )
-    ),
-    fluidRow(column(width = 12,
-                    h3(
-                      "Industrial Partners"
-                    ))),
-    fluidRow(column(width = 4,
-                    div(
-                      column(width = 12,
-                             h4("Tom Wuytack"))
-                    )),
-             column(width = 4,
-                    div(
-                      column(width = 12,
-                             h4("Stefan Hartmann"))
-                    ))),
-    fluidRow(column(width = 4,
-                    div(
-                      column(width = 3,
-                             imageOutput(
-                               "wuytack", width = "150px", height = "200px"
-                             )),
-                      column(
-                        offset = 1,
-                        width = 8,
-                        HTML(
-                          "Tom Wuytack is the Chief Information Officer at <b>Belga News Agency</b>, a company he has been
-                          working at for over 15 years. He is convinced about the positive impact a trustworthy calculation of
-                          textual sentiment will have on extending media analysis services to Belga's clients."
-                        )
-                      )
-                    )),
-             column(width = 4,
-                    div(
-                      column(
-                        width = 3,
-                        imageOutput("hartmann", width = "150px", height = "200px")
-                      ),
-                      column(
-                        offset = 1,
-                        width = 8,
-                        HTML(
-                          "Stefan Hartmann is Head of Quantitative Research at <b> Finvex </b>. He is knowledgeable on the
-                          majority of contemporary investment strategies and products. He has observed a trend towards the
-                          explicit incorporation of sentiment expressed in texts in investment decisions and products, which
-                          he himself believes has strong potential."
-                        )
-                      )
-                    )))
-  ),
-  tabPanel(
-    "News",
-    tags$style(type = "text/css"),
-    fluidRow(column(width = 12,
-                    HTML("<b> April 2017 </b>")),
-             column(
-               width = 12,
-               h4(
-                 "Green light for first stage of Team Up development of Sentometrics together with Belga and Finvex."
-               )
-             )),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> May 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "Google Summer of Code funding for Samuel Borms to create the R package 'sentometrics'.",
-                        href = "https://summerofcode.withgoogle.com/projects/#5832364795101184",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> May 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "White paper on Sentometrics released on SSRN.",
-                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6274895843879456768",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> June 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "Swissuniversities funding for Sentometrics research of Keven Bluteau.",
-                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6276875594202386432",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML(
-                      "<b> November 2017 </b>"
-                    )),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "Release of R package 'sentometrics'.",
-                        href = "https://sborms.github.io/sentometrics/",
-                        target = "_blank"
-                      )
-                    ))))
   )
 )
 

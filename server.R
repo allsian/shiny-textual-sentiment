@@ -15,11 +15,10 @@ library(TTR)
 
 ############################
 
-plot_sent <- function(data, dots, timeGap, type = "multi") {
+plot_sent <- function(data, timeGap, type = "multi") {
   if (type == "multi") p <- ggplot(data = data, aes(x = date, y = net_sent, color = name))
   else if (type == "full") p <- ggplot(data = data, aes(x = date, y = net_sent_full))
   p <- p +
-    {if (as.numeric(dots)) geom_point()} +
     geom_line(aes(y = sma), size = 1.25) +
     geom_hline(yintercept = 0, size = 0.70, linetype = "dotted") +
     scale_y_continuous(name = "Sentiment Score") + 
@@ -333,7 +332,7 @@ function(input, output) {
                   "Try out a different combination of parameters and make those time series pop up!"))
     )
     data <- selData$data
-    p1 <- plot_sent(data, input$dots, timeGap = input$dates[2] - input$dates[1])
+    p1 <- plot_sent(data, timeGap = input$dates[2] - input$dates[1])
     data$documents[is.na(data$documents)] <- 0
     dataCol <- rbind(data[language == "nl" & lexicon == unique(lexicon)[1], ],
                      data[language == "fr" & lexicon == unique(lexicon)[1], ])
@@ -352,75 +351,11 @@ function(input, output) {
                   "Try out a different combination of parameters and make that global time series pop up!"))
     )
     data <- selDataFull$data
-    p1 <- plot_sent(data, input$dots2, timeGap = input$dates2[2] - input$dates2[1], type = "full")
+    p1 <- plot_sent(data, timeGap = input$dates2[2] - input$dates2[1], type = "full")
     data$documents[is.na(data$documents)] <- 0
     data$col <- "col"
     p2 <- plot_docs(data, color = "col")
     make_grid(top = p2, bottom = p1)
-  })
-
-  output$methodology <- renderUI({
-    HTML(paste0("<p> The methodology to obtain the displayed textual sentiment time series
-                can be explained in brief by below series of steps:",
-                "<ol>",
-                "<li> Assemble a selection of texts (a corpus) </li>",
-                "<li> Select, per topic, the texts of interest to form a subcorpus:" ,
-                "<ul> <li> Based on keyword tag (e.g. 'VOETBAL' or 'FOOTBALL') </li>
-                      <li> Based on category tag (e.g. 'POL' for politics) </li>
-                      <li> Based on language tag </li> </ul> </li>",
-                "<li> Match for each text all words to a word list (lexicon) and assign a textual sentiment score </li>",
-                "<li> Aggregate the sentiment scores of all texts per date to obtain a time series </li>",
-                "<li> Smooth the time series </li>",
-                "</ol>",
-                "<p> A lexicon is a collection of words with associated polarities. There circulate
-                several lexicons in text mining research, primarily in English. Most often, these
-                lexicons are general in nature, but some are domain-specific. In this setting, we
-                have used an originally English financial lexicon, translated to both French and Dutch, a
-                general French lexicon, and a general English lexicon, translated to Dutch. </p>",
-                "<p> Sentiment for a given text is calculated based on the bag-of-words model. Every text is decomposed
-                into words and matched against a lexicon. The polarity scores of words present in every text are summed,
-                weighted by the proportion of the particular polar words with respect to the total number of words per text.
-                This results into a sentiment score for each text. Sentiment on a single day equals the average of the
-                sentiment scores from all texts on that day. More complex sentiment analysis exists in which the impact
-                of surrounding words near the polarized word is accounted for. This is the most accurate approach, yet
-                computationally more demanding. As a simple example, 'not bad' would have an initial sentiment value of -1 due
-                to the word 'bad', but this is eventually reversed because of the presence of the word 'not'. </p>",
-                "<p> The fully aggregated sentiment index combines all articles in both French and Dutch
-                as well as the different sentiment scores per lexicon. The weight options allow to control
-                for the importance of each language or lexicon. </p>"))
-  })
-
-  output$analysis <- renderUI({
-    HTML(paste0("Constructing a time series of textual sentiment is only the first step, extracting information from it is what 
-                counts. Significant statistical analysis is required to get the most out of the observed evolution and the 
-                level of textual sentiment. Elements of this analysis are:",
-                "<ul>",
-                "<li> The disparity in number of texts is apparent. During and shortly after important events,
-                the number of documents is clearly higher. How does the number of news articles spread out to the sentiment
-                value?",
-                "<li> It is very much of interest to connect a peak in sentiment to the articles which have propelled that peak.
-                This is called attribution, and can be done at various levels. Similarly, peaks can be linked to news sources
-                (e.g. magazines), to detect whether some news source is driving sentiment more than others. </li>",
-                "<li> How is textual sentiment from articles in one language correlated to articles in another language? Is
-                sentiment expressed in different languages, or by journalists in different countries, divergent or rather
-                the same? </li>",
-                "<li> When and why is sentiment positive or negative? When and why is sentiment abnormally high or low? </li>",
-                "</ul>",
-                "The overall framework for textual sentiment calculation is still subject to several
-                inefficiencies. Below an incomplete list of the main aspects to be addressed to refine
-                the quantification of sentiment from texts, and carry out the suggested statistical analyses: ",
-                "<ul>",
-                "<li> Translation of lexicons to different languages, such as Dutch and French. Additionally,
-                the creation and enhancement of domain-specific lexicons. </li>",
-                "<li> Robust detection of abnormal sentiment. </li>",
-                "<li> Removal of fake news, and more generally, texts not related to a particular topic. </li>",
-                "<li> Optimal aggregation weighting schemes for the computation of specific textual sentiment indices.
-                Part of this includes improving the combination of different types of articles (in different languages,
-                from different sources, in different writing styles, and alike). </li>",
-                "</ul>",
-                "<p> <b> Follow the team's research to stay up-to-date on how we apply econometrics 
-                to textual sentiment! </b> </p>"
-                ))
   })
 
   output$export <- downloadHandler(
@@ -471,27 +406,6 @@ function(input, output) {
     ))
   }, deleteFile = FALSE)
 
-  output$wuytack <- renderImage({
-    return(list(
-      src = "images/wuytack.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$hartmann <- renderImage({
-    return(list(
-      src = "images/hartmann.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$thewissen <- renderImage({
-    return(list(
-      src = "images/thewissen.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
   output$algaba <- renderImage({
     return(list(
       src = "images/algaba.jpg",
@@ -499,23 +413,16 @@ function(input, output) {
     ))
   }, deleteFile = FALSE)
 
-  output$torsin <- renderImage({
+  output$belga <- renderImage({
     return(list(
-      src = "images/torsin.jpg",
+      src = "images/belga.jpg",
       filetype = "image/jpeg"
     ))
   }, deleteFile = FALSE)
 
-  output$linkedinA <- renderImage({
+  output$finvex <- renderImage({
     return(list(
-      src = "images/linkedin.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$linkedinB <- renderImage({
-    return(list(
-      src = "images/linkedin.jpg",
+      src = "images/finvex.jpg",
       filetype = "image/jpeg"
     ))
   }, deleteFile = FALSE)
