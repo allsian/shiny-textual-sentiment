@@ -121,8 +121,8 @@ navbarPage(
              )),
     fluidRow(column(
                width = 12,
-               h4(
-                 ""
+               HTML(
+                 " \n \n"
                )
              ))
   ),
@@ -207,11 +207,11 @@ navbarPage(
         column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "bluteau", width = "150px", height = "200px"
+                          "bluteau", width = "140px", height = "200px"
                         )),
                  column(
-                   offset = 1,
-                   width = 8,
+                   offset = 0,
+                   width = 9,
                    HTML(
                      "Keven Bluteau is a PhD student, working on volatility modelling and how to use textual sentiment 
                      to forecast economic and financial variables."
@@ -221,11 +221,11 @@ navbarPage(
           column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "borms", width = "150px", height = "200px"
+                          "borms", width = "140px", height = "200px"
                         )),
                  column(
-                   offset = 1,
-                   width = 8,
+                   offset = 0,
+                   width = 9,
                    HTML(
                      "Samuel Borms is a PhD student devoted to textual sentiment analysis. He wrote the R software 
                      package 'sentometrics' during a Google Summer of Code project."
@@ -235,11 +235,11 @@ navbarPage(
           column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "algaba", width = "150px", height = "200px"
+                          "algaba", width = "140px", height = "200px"
                         )),
                  column(
-                   offset = 1,
-                   width = 8,
+                   offset = 0,
+                   width = 9,
                    HTML(
                      "Andres Algaba is a PhD student who studies the time variation in financial time series. His latest
                      research focuses on text-based ESG indices."
