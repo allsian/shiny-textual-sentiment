@@ -1,17 +1,17 @@
 
-library(shiny)
-library(shinythemes)
-library(ggplot2)
-library(ggthemes)
-library(grDevices)
-library(grid)
-library(gridExtra)
-library(extrafont)
-library(feather)
-library(data.table)
-library(dplyr)
-library(scales)
-library(TTR)
+library("shiny")
+library("shinythemes")
+library("ggplot2")
+library("ggthemes")
+library("grDevices")
+library("grid")
+library("gridExtra")
+library("extrafont")
+library("feather")
+library("data.table")
+# library(dplyr)
+library("scales")
+library("TTR")
 
 ############################
 
@@ -162,8 +162,10 @@ function(input, output) {
     data[, "name" := paste0(data$lexicon, " (", data$language, ")")]
     data <- data[documents >= input$minDocs2, ]
     if (nrow(data) > 0) {
-      docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
-      words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
+      # docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
+      docs <- data[, .(n = sum(documents, na.rm = TRUE)), by = name]
+      # words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
+      words <- data[, .(n = round(mean(words / documents, na.rm = TRUE), 0)), by = name]
     }
     # add columns for language and lexicon based on weight (two user inputs)
     weightsLex <- rep(input$wLex / 100, nrow(data)) # General
@@ -229,7 +231,8 @@ function(input, output) {
            paste0(""))
     )
     data <- selData$data
-    docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
+    # docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
+    docs <- data[, .(n = sum(documents, na.rm = TRUE)), by = name]
     HTML(paste0("<b> Number of documents: </b>",
                 "<ul>",
                 paste0("<li>",
@@ -249,7 +252,8 @@ function(input, output) {
       need(selData$valid == TRUE,
            paste0(""))
     )
-    words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
+    # words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
+    words <- data[, .(n = round(mean(words / documents, na.rm = TRUE), 0)), by = name]
     HTML(paste0("<b> Average words per document: </b>",
                 "<ul>",
                 paste0("<li>",
@@ -302,7 +306,8 @@ function(input, output) {
     )
     data <- selData$data
     if (!as.logical(input$normalised)) {
-      stats <- dplyr::summarise(group_by(data, name), sentiment = mean(net_sent))
+      # stats <- dplyr::summarise(group_by(data, name), sentiment = mean(net_sent))
+      stats <- data[, .(sentiment = mean(net_sent)), by = name]
       names(stats) <- c("Selection", "Mean Sentiment")
       return(stats)
     }

@@ -1,6 +1,6 @@
 
-library(shiny)
-library(shinythemes)
+library("shiny")
+library("shinythemes")
 
 inputs <- function() {
   wellPanel(fluidRow(
@@ -43,7 +43,7 @@ inputs <- function() {
 navbarPage(
   title = "Sentometrics",
   header = "",
-  theme = shinytheme("flatly"),
+  theme = shinythemes::shinytheme("flatly"),
   tabPanel(
     "News",
     tags$style(type = "text/css"),
@@ -61,7 +61,7 @@ navbarPage(
              column(width = 12,
                     h4(helpText(
                       a(
-                        "Google Summer of Code funding for Samuel Borms to create the R package 'sentometrics'.",
+                        "Google Summer of Code 2017 funding for Samuel Borms to create the R package 'sentometrics'.",
                         href = "https://summerofcode.withgoogle.com/projects/#5832364795101184",
                         target = "_blank"
                       )
@@ -118,6 +118,12 @@ navbarPage(
                h4(
                  "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia."
                )
+             )),
+    fluidRow(column(
+               width = 12,
+               h4(
+                 ""
+               )
              ))
   ),
   tabPanel(
@@ -126,7 +132,7 @@ navbarPage(
     div(style = "text-align: center",
         column(width = 12,
                HTML(paste0("<h3><b>Follow the team's research at ", 
-                           "<a href='www.sentometrics.be'>sentometrics.be</a>", 
+                           "<a href='http://www.sentometrics.com' target = '_blank'>sentometrics.com</a>", 
                            " to stay up-to-date on how we apply econometrics
                            to textual sentiment!</b></h3>")))
                ),
@@ -134,77 +140,71 @@ navbarPage(
                     h3("Academic Team"))
     ),
     fluidRow(
-        div(
-          fluidRow(
-          column(width = 4,
-                 div(
-                   column(width = 11,
-                          h4("Kris Boudt (Vrije Universiteit Brussel)"))
+      column(width = 4,
+             div(
+               column(width = 11,
+                      h4("Kris Boudt (Vrije Universiteit Brussel)"))
+             )),
+      column(width = 4,
+             div(
+               column(width = 11,
+                      h4("David Ardia (Université de Neuchâtel)"))
+             ))
+    ),
+    fluidRow(
+      column(width = 4,
+             div(
+               column(width = 3,
+                      imageOutput(
+                        "boudt", width = "150px", height = "200px"
+                      )),
+               column(
+                 offset = 1,
+                 width = 8,
+                 HTML(
+                   "Prof. Kris Boudt is Associate Professor at the Vrije Universiteit Brussel with extensive
+                   experience in (financial) econometrics. The past several years, he has been developing statistical
+                   tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
+                   the Vrije Universiteit Amsterdam."
+                 )
+                 )
                  )),
-          column(width = 4,
-                 div(
-                   column(width = 11,
-                          h4("David Ardia (Université de Neuchâtel)"))
+      column(width = 4,
+             div(
+               column(width = 3,
+                      imageOutput(
+                        "ardia", width = "150px", height = "200px"
+                      )),
+               column(
+                 offset = 1,
+                 width = 8,
+                 HTML(
+                   "Prof. David Ardia is Assistant Professor at the Université de Neuchâtel as well as the Université
+                   Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
+                   who has been working with Prof. Boudt for close to a decade."
+                 )
+                 )
                  ))
-        ),
+               ),
         fluidRow(
-          column(offset = 0, width = 4,
-                 div(
-                   column(offset = 0,
-                          width = 3,
-                          imageOutput(
-                            "boudt", width = "150px", height = "200px"
-                          )),
-                   column(
-                     offset = 1,
-                     width = 8,
-                     HTML(
-                       "Prof. Kris Boudt is Associate Professor at the Vrije Universiteit Brussel with extensive
-                       experience in (financial) econometrics. The past several years, he has been developing statistical
-                       tools to analyse sentiment present in texts, like corporate publications. He also holds a position at
-                       the Vrije Universiteit Amsterdam."
-                     )
-                     )
-                     )),
           column(width = 4,
-                 div(
-                   column(offset = 0,
-                          width = 3,
-                          imageOutput(
-                            "ardia", width = "150px", height = "200px"
-                          )),
-                   column(
-                     offset = 1,
-                     width = 8,
-                     HTML(
-                       "Prof. David Ardia is Assistant Professor at the Université de Neuchâtel as well as the Université
-                       Laval. He is a specialist in the modelling of financial risks, with very strong computational skills,
-                       who has been working with Prof. Boudt for close to a decade."
-                     )
-                     )
-                     ))
-                   )
-                 )),
-    div(style = "padding: 0px",
-        fluidRow(
-          column(width = 3,
                div(column(
                  width = 12,
                  h4("Keven Bluteau (UniNE/VUB)")
                ))),
-        column(width = 3,
+          column(width = 4,
                div(column(
                  width = 12,
                  h4("Samuel Borms (UniNE/VUB)")
                ))),
-        column(width = 3,
+          column(width = 4,
                div(column(
                  width = 12,
                  h4("Andres Algaba (VUB)")
                )))
         ),
         fluidRow(
-        column(offset = 0, width = 3,
+        column(width = 4,
                  column(width = 3,
                         imageOutput(
                           "bluteau", width = "150px", height = "200px"
@@ -213,12 +213,12 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Keven Bluteau is a PhD student, working primarily on how to use textual sentiment analysis to forecast
-                     economic and financial variables."
+                     "Keven Bluteau is a PhD student, working on volatility modelling and how to use textual sentiment 
+                     to forecast economic and financial variables."
                    )
                    )
                  ),
-          column(width = 3,
+          column(width = 4,
                  column(width = 3,
                         imageOutput(
                           "borms", width = "150px", height = "200px"
@@ -227,12 +227,12 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He created the 'sentometrics'
-                     software package during a Google Summer of Code project."
+                     "Samuel Borms is a PhD student devoted to textual sentiment analysis. He wrote the R software 
+                     package 'sentometrics' during a Google Summer of Code project."
                    )
                    )
                  ),
-          column(width = 3,
+          column(width = 4,
                  column(width = 3,
                         imageOutput(
                           "algaba", width = "150px", height = "200px"
@@ -241,14 +241,13 @@ navbarPage(
                    offset = 1,
                    width = 8,
                    HTML(
-                     "Andres Algaba is a PhD student who studies the time variation in financial time series, including those
-                     who are sentiment-based."
+                     "Andres Algaba is a PhD student who studies the time variation in financial time series. His latest
+                     research focuses on text-based ESG indices."
                    )
                    ))
-        )
-    ),
-    div(style = "padding: 0px",
-      column(width = 12,
+        ),
+      fluidRow(
+        column(width = 12,
                     h3(
                       "Industrial Partners"
                     )),
@@ -263,8 +262,7 @@ navbarPage(
                         width = 11,
                         imageOutput("finvex", width = "150px", height = "200px")
                       )
-             )
-    )
+             ))
       ),
   tabPanel(
     'Visualisation',
@@ -321,14 +319,14 @@ navbarPage(
                       "Weight to French Documents (%)",
                       min = 0,
                       max = 100,
-                      value = 75
+                      value = 70
                     ),
                     sliderInput(
                       "wLex",
                       "Weight to the 'General' Lexicon (%)",
                       min = 0,
                       max = 100,
-                      value = 25
+                      value = 45
                     )
                   ),
                   div(
