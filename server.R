@@ -194,25 +194,61 @@ function(input, output) {
   selData <- reactiveValues()
   selDataFull <- reactiveValues()
 
-  output$GenFR <- renderTable({
-    get_leads(out, input, "fr", "General")
-  })
-  outputOptions(output, "GenFR", suspendWhenHidden = FALSE)
+  output$boudt <- renderImage({
+    return(list(
+      src = "images/boudt.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "boudt", suspendWhenHidden = FALSE)
   
-  output$FinFR <- renderTable({
-    get_leads(out, input, "fr", "Financial")
-  })
-  outputOptions(output, "FinFR", suspendWhenHidden = FALSE)
+  output$ardia <- renderImage({
+    return(list(
+      src = "images/ardia.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "ardia", suspendWhenHidden = FALSE)
   
-  output$GenNL <- renderTable({
-    get_leads(out, input, "nl", "General")
-  })
-  outputOptions(output, "GenNL", suspendWhenHidden = FALSE)
+  output$bluteau <- renderImage({
+    return(list(
+      src = "images/bluteau.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "bluteau", suspendWhenHidden = FALSE)
   
-  output$FinNL <- renderTable({
-    get_leads(out, input, "nl", "Financial")
-  })
-  outputOptions(output, "FinNL", suspendWhenHidden = FALSE)
+  output$borms <- renderImage({
+    return(list(
+      src = "images/borms.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "borms", suspendWhenHidden = FALSE)
+  
+  output$algaba <- renderImage({
+    return(list(
+      src = "images/algaba.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "algaba", suspendWhenHidden = FALSE)
+  
+  output$belga <- renderImage({
+    return(list(
+      src = "images/belga.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "belga", suspendWhenHidden = FALSE)
+  
+  output$finvex <- renderImage({
+    return(list(
+      src = "images/finvex.jpg",
+      filetype = "image/jpeg"
+    ))
+  }, deleteFile = FALSE)
+  outputOptions(output, "finvex", suspendWhenHidden = FALSE)
   
   output$nDocs <- renderUI({
     validate(
@@ -381,54 +417,25 @@ function(input, output) {
     },
     contentType = "text/csv"
   )
-
-  output$boudt <- renderImage({
-    return(list(
-      src = "images/boudt.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$ardia <- renderImage({
-    return(list(
-      src = "images/ardia.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$bluteau <- renderImage({
-    return(list(
-      src = "images/bluteau.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$borms <- renderImage({
-    return(list(
-      src = "images/borms.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$algaba <- renderImage({
-    return(list(
-      src = "images/algaba.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$belga <- renderImage({
-    return(list(
-      src = "images/belga.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
-
-  output$finvex <- renderImage({
-    return(list(
-      src = "images/finvex.jpg",
-      filetype = "image/jpeg"
-    ))
-  }, deleteFile = FALSE)
+  
+  output$GenFR <- renderTable({
+    get_leads(out, input, "fr", "General")
+  })
+  outputOptions(output, "GenFR", suspendWhenHidden = FALSE)
+  
+  output$FinFR <- renderTable({
+    get_leads(out, input, "fr", "Financial")
+  })
+  outputOptions(output, "FinFR", suspendWhenHidden = FALSE)
+  
+  output$GenNL <- renderTable({
+    get_leads(out, input, "nl", "General")
+  })
+  outputOptions(output, "GenNL", suspendWhenHidden = FALSE)
+  
+  output$FinNL <- renderTable({
+    get_leads(out, input, "nl", "Financial")
+  })
+  outputOptions(output, "FinNL", suspendWhenHidden = FALSE)
 }
 
