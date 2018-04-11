@@ -47,54 +47,13 @@ navbarPage(
   tabPanel(
     "News",
     tags$style(type = "text/css"),
-    fluidRow(column(width = 12,
-                    HTML("<b> April 2017 </b>")),
+    div(style = "padding: 5px 5px 20px 5px",
+      fluidRow(column(width = 12,
+                    HTML("<b> March 2018 </b>")),
              column(
                width = 12,
                h4(
-                 "Green light for first stage of Innoviris Team Up development of Sentometrics together with Belga and Finvex."
-               )
-             )),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> May 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "Google Summer of Code 2017 funding for Samuel Borms to create the R package 'sentometrics'.",
-                        href = "https://summerofcode.withgoogle.com/projects/#5832364795101184",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> May 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "White paper on Sentometrics released on SSRN.",
-                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6274895843879456768",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> June 2017 </b>")),
-             column(width = 12,
-                    h4(helpText(
-                      a(
-                        "Swissuniversities funding for Sentometrics research of Keven Bluteau.",
-                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6276875594202386432",
-                        target = "_blank"
-                      )
-                    )))),
-    hr(),
-    fluidRow(column(width = 12,
-                    HTML("<b> October 2017 </b>")),
-             column(
-               width = 12,
-               h4(
-                 "Innoviris Team Up full funding support granted to Sentometrics in partnership with Belga and Finvex."
+                 "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia."
                )
              )),
     hr(),
@@ -112,34 +71,72 @@ navbarPage(
                     )))),
     hr(),
     fluidRow(column(width = 12,
-                    HTML("<b> March 2018 </b>")),
+                    HTML("<b> October 2017 </b>")),
              column(
                width = 12,
                h4(
-                 "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia."
+                 "Innoviris Team Up full funding support granted to Sentometrics in partnership with Belga and Finvex."
                )
              )),
-    fluidRow(column(
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> June 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "Swissuniversities funding for Sentometrics research of Keven Bluteau.",
+                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6276875594202386432",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> May 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "White paper on Sentometrics released on SSRN.",
+                        href = "https://www.linkedin.com/feed/update/urn:li:activity:6274895843879456768",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> May 2017 </b>")),
+             column(width = 12,
+                    h4(helpText(
+                      a(
+                        "Google Summer of Code 2017 funding for Samuel Borms to create the R package 'sentometrics'.",
+                        href = "https://summerofcode.withgoogle.com/projects/#5832364795101184",
+                        target = "_blank"
+                      )
+                    )))),
+    hr(),
+    fluidRow(column(width = 12,
+                    HTML("<b> April 2017 </b>")),
+             column(
                width = 12,
-               HTML(
-                 " \n \n"
+               h4(
+                 "Green light for first stage of Innoviris Team Up development of Sentometrics together 
+                 with Belga and Finvex."
                )
              ))
+    )
   ),
   tabPanel(
     "Team",
     tags$style(type = "text/css"),
-    div(style = "text-align: center",
-        column(width = 12,
-               HTML(paste0("<h3><b>Follow the team's research at ", 
+    fluidRow(
+      column(width = 12,
+               HTML(paste0("<h4>Follow the team's research at ", 
                            "<a href='http://www.sentometrics.com' target = '_blank'>sentometrics.com</a>", 
                            " to stay up-to-date on how we apply econometrics
-                           to textual sentiment!</b></h3>")))
-               ),
-    fluidRow(column(width = 12,
-                    h3("Academic Team"))
-    ),
+                           to textual sentiment!</h4>"))
+           )
+      ),
     fluidRow(
+      column(width = 12,
+                    h3("Academic Team")),
       column(width = 4,
              div(
                column(width = 11,
@@ -186,7 +183,7 @@ navbarPage(
                  )
                  ))
                ),
-        fluidRow(
+    fluidRow(
           column(width = 4,
                div(column(
                  width = 12,
@@ -201,10 +198,8 @@ navbarPage(
                div(column(
                  width = 12,
                  h4("Andres Algaba (VUB)")
-               )))
-        ),
-        fluidRow(
-        column(width = 4,
+               ))),
+          column(width = 4,
                  column(width = 3,
                         imageOutput(
                           "bluteau", width = "140px", height = "200px"
@@ -215,7 +210,7 @@ navbarPage(
                    HTML(
                      "Keven Bluteau is a PhD student, working on volatility modelling and how to use textual sentiment 
                      to forecast economic and financial variables."
-                   )
+                    )
                    )
                  ),
           column(width = 4,
@@ -229,7 +224,7 @@ navbarPage(
                    HTML(
                      "Samuel Borms is a PhD student devoted to textual sentiment analysis. He wrote the R software 
                      package 'sentometrics' during a Google Summer of Code project."
-                   )
+                    )
                    )
                  ),
           column(width = 4,
@@ -243,10 +238,9 @@ navbarPage(
                    HTML(
                      "Andres Algaba is a PhD student who studies the time variation in financial time series. His latest
                      research focuses on text-based ESG indices."
+                    )
                    )
-                   ))
-        ),
-      fluidRow(
+                 ),
         column(width = 12,
                     h3(
                       "Industrial Partners"

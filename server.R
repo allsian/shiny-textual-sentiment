@@ -9,9 +9,11 @@ library("gridExtra")
 library("extrafont")
 library("feather")
 library("data.table")
-# library("dplyr")
 library("scales")
 library("TTR")
+
+# load input data with all relevant information, including sentiment scores (data not included in the repo!)
+out <- as.data.table(feather::read_feather("OUT.feather"))
 
 ############################
 
@@ -21,7 +23,7 @@ plot_sent <- function(data, timeGap, type = "multi") {
   p <- p +
     geom_line(aes(y = sma), size = 1.25) +
     geom_hline(yintercept = 0, size = 0.70, linetype = "dotted") +
-    scale_y_continuous(name = "Sentiment Score") + 
+    scale_y_continuous(name = "Sentiment") + 
     scale_x_date(name = "Date",
                  labels = ifelse(timeGap > 90, date_format("%m-%Y"), date_format("%d-%m-%y"))) +
     theme_tufte(ticks = TRUE) +
@@ -98,10 +100,8 @@ fill_dates <- function(data, dates, type) {
 
 ############################
 
-# load input data with all relevant information, including sentiment scores (data not included in the repo!)
-out <- as.data.table(feather::read_feather("OUT.feather"))
-
 function(input, output) {
+  
   computeData <- reactive({
     data <- out[keyword %in% input$keywords, ] # selected topic
     if (length(input$desk) > 0) {
@@ -134,7 +134,7 @@ function(input, output) {
       }
       data <- dataNew
     } else nvals <- 0 # in case data is empty
-    if (any(nvals < 10)) { # if at least one of the series has less than 50 data points, no plot is shown
+    if (any(nvals < 10)) { # if at least one of the series has less than 10 data points, no plot is shown
       valid <- FALSE
     } else {
       valid <- TRUE
@@ -144,55 +144,47 @@ function(input, output) {
                      by = list(lexicon, language)]
         data[, "net_sent" := norm$vals]
       }
-      nSMA <- as.integer(input$nSMA)
-      sma <- data[, list(vals = SMA(net_sent, n = nSMA)), by = list(lexicon, language)]
+      sma <- data[, list(vals = SMA(net_sent, n = as.integer(input$nSMA))), by = list(lexicon, language)]
       data[, "sma" := sma$vals]
     }
     return(list(data = data, valid = valid))
   })
 
   computeDataFull <- reactive({
-    data <- out[keyword %in% input$keywords, ] # selected topic
+    data <- out[keyword %in% input$keywords, ] 
     data <- data[word_count >= input$minWords2, ]
-    data <- data[, list(net_sent = sum(net_sent, na.rm = TRUE), # average net sentiment score
-                        words = sum(word_count), # total number of words
-                        documents = sum(doc_counter)), # total number of documents
-                 by = list(date, lexicon, language)] # aggregate over date based on selected keywords
+    data <- data[, list(net_sent = sum(net_sent, na.rm = TRUE), 
+                        words = sum(word_count), 
+                        documents = sum(doc_counter)), 
+                 by = list(date, lexicon, language)] 
     data <- data[date >= input$dates2[1] & date <= input$dates2[2], ][order(lexicon, language)]
     data[, "name" := paste0(data$lexicon, " (", data$language, ")")]
     data <- data[documents >= input$minDocs2, ]
     if (nrow(data) > 0) {
-      # docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
       docs <- data[, .(n = sum(documents, na.rm = TRUE)), by = name]
-      # words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
       words <- data[, .(n = round(mean(words / documents, na.rm = TRUE), 0)), by = name]
     }
-    # add columns for language and lexicon based on weight (two user inputs)
     weightsLex <- rep(input$wLex / 100, nrow(data)) # General
     weightsLex[data$lexicon == "Financial"] <- 1 - (input$wLex / 100)
-    weightsLang <- rep(input$wLan / 100, nrow(data)) # fr
+    weightsLang <- rep(input$wLan / 100, nrow(data)) # French
     weightsLang[data$language == "nl"] <- 1 - (input$wLan / 100)
     data[, "weightsLex" := weightsLex]
     data[, "weightsLang" := weightsLang]
-    # take the weighted sum of sentiment per date to obtain fully aggregated sentiment time series
     data <- data[, list(net_sent_full = sum(net_sent * weightsLex * weightsLang, na.rm = TRUE),
                         documents = sum(documents, na.rm = TRUE) / 2,
                         words = sum(words, na.rm = TRUE) / 2),
                  by = list(date)][order(date)]
     nvals <- length(data$date)
-    if (nvals >= 10) { # if the series has less than 10 data points, no plot is shown
+    if (nvals >= 10) {
       valid <- TRUE
-      # fill in missing dates with 0 for net_sent_full, words and documents
       data <- fill_dates(data, input$dates2, "net_sent_full")
-      # normalize entire series if option for normalisation is TRUE
       if (input$normalised2) {
         norm <- (data$net_sent_full - mean(data$net_sent_full, na.rm = TRUE)) / sd(data$net_sent_full, na.rm = TRUE)
         data[, "net_sent_full" := norm]
       }
-      nSMA <- as.integer(input$nSMA2)
-      data[, "sma" := SMA(data$net_sent_full, n = nSMA)]
+      data[, "sma" := SMA(data$net_sent_full, n = as.integer(input$nSMA2))]
     } else {
-      nvals <- docs <- words <- 0 # in case data is empty
+      nvals <- docs <- words <- 0
       valid <- FALSE
     }
     return(list(data = data, valid = valid, docs = docs, words = words))
@@ -205,25 +197,28 @@ function(input, output) {
   output$GenFR <- renderTable({
     get_leads(out, input, "fr", "General")
   })
-
+  outputOptions(output, "GenFR", suspendWhenHidden = FALSE)
+  
   output$FinFR <- renderTable({
     get_leads(out, input, "fr", "Financial")
   })
-
+  outputOptions(output, "FinFR", suspendWhenHidden = FALSE)
+  
   output$GenNL <- renderTable({
     get_leads(out, input, "nl", "General")
   })
-
+  outputOptions(output, "GenNL", suspendWhenHidden = FALSE)
+  
   output$FinNL <- renderTable({
     get_leads(out, input, "nl", "Financial")
   })
-
+  outputOptions(output, "FinNL", suspendWhenHidden = FALSE)
+  
   output$nDocs <- renderUI({
     validate(
       need(validator(input), "")
     )
-    # run computeData() once and assign it to selData for later use
-    getData <- computeData()
+    getData <- computeData() # run computeData() once and assign it to selData for later use
     selData$data <- getData$data
     selData$valid <- getData$valid
     validate(
@@ -231,7 +226,6 @@ function(input, output) {
            paste0(""))
     )
     data <- selData$data
-    # docs <- dplyr::summarise(group_by(data, name), n = sum(documents, na.rm = TRUE))
     docs <- data[, .(n = sum(documents, na.rm = TRUE)), by = name]
     HTML(paste0("<b> Number of documents: </b>",
                 "<ul>",
@@ -242,7 +236,8 @@ function(input, output) {
                        "</li"),
                 "</ul>"))
   })
-
+  outputOptions(output, "nDocs", suspendWhenHidden = FALSE)
+  
   output$nWords <- renderUI({
     validate(
       need(validator(input), "")
@@ -252,7 +247,6 @@ function(input, output) {
       need(selData$valid == TRUE,
            paste0(""))
     )
-    # words <- dplyr::summarise(group_by(data, name), n = round(mean(words / documents, na.rm = TRUE), 0))
     words <- data[, .(n = round(mean(words / documents, na.rm = TRUE), 0)), by = name]
     HTML(paste0("<b> Average words per document: </b>",
                 "<ul>",
@@ -263,10 +257,10 @@ function(input, output) {
                        "</li"),
                 "</ul>"))
   })
-
+  outputOptions(output, "nWords", suspendWhenHidden = FALSE)
+  
   output$nDocsFull <- renderUI({
-    # run computeDataFull() once and assign it to selDataFull for later use
-    getData <- computeDataFull()
+    getData <- computeDataFull() # run computeDataFull() once and assign it to selDataFull for later use
     selDataFull$data <- getData$data
     selDataFull$valid <- getData$valid
     selDataFull$docs <- getData$docs
@@ -284,7 +278,8 @@ function(input, output) {
                        "</li"),
                 "</ul>"))
   })
-
+  outputOptions(output, "nDocsFull", suspendWhenHidden = FALSE)
+  
   output$nWordsFull <- renderUI({
     validate(
       need(all(c(validator2(input), selDataFull$valid == TRUE)), "")
@@ -299,20 +294,21 @@ function(input, output) {
                        "</li"),
                 "</ul>"))
   })
-
+  outputOptions(output, "nWordsFull", suspendWhenHidden = FALSE)
+  
   output$stats <- renderTable({
     validate(
       need(all(c(validator(input), selData$valid == TRUE)), "Select proper inputs.")
     )
     data <- selData$data
     if (!as.logical(input$normalised)) {
-      # stats <- dplyr::summarise(group_by(data, name), sentiment = mean(net_sent))
       stats <- data[, .(sentiment = mean(net_sent)), by = name]
       names(stats) <- c("Selection", "Mean Sentiment")
       return(stats)
     }
   })
-
+  outputOptions(output, "stats", suspendWhenHidden = FALSE)
+  
   output$meanSent <- renderUI({
     validate(
       need(all(c(validator2(input), selDataFull$valid == TRUE)), paste0("Select proper inputs.", "\n \n"))
@@ -324,7 +320,8 @@ function(input, output) {
            "<br> <br>")
     }
   })
-
+  outputOptions(output, "meanSent", suspendWhenHidden = FALSE)
+  
   output$plot <- renderPlot({
     validate(
       need(all(c(validator(input), selData$valid == TRUE)),
@@ -344,7 +341,8 @@ function(input, output) {
     p2 <- plot_docs(dataCol)
     make_grid(top = p2, bottom = p1)
   })
-
+  outputOptions(output, "plot", suspendWhenHidden = FALSE)
+  
   output$plotFull <- renderPlot({
     validate(
       need(all(c(validator2(input), selDataFull$valid == TRUE)),
@@ -362,7 +360,8 @@ function(input, output) {
     p2 <- plot_docs(data, color = "col")
     make_grid(top = p2, bottom = p1)
   })
-
+  outputOptions(output, "plotFull", suspendWhenHidden = FALSE)
+  
   output$export <- downloadHandler(
    filename = paste('text-sent-multiple-', Sys.Date(), '.csv', sep = ''),
    content = function(file) {
