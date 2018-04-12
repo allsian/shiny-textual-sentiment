@@ -65,7 +65,7 @@ navbarPage(
                     h4(helpText(
                       a(
                         "Release of R package 'sentometrics'.",
-                        href = "https://sborms.github.io/sentometrics/",
+                        href = "https://github.com/sborms/sentometrics",
                         target = "_blank"
                       )
                     )))),
@@ -153,7 +153,7 @@ navbarPage(
              div(
                column(width = 3,
                       imageOutput(
-                        "boudt", width = "150px", height = "200px"
+                        "boudt", width = "150px", height = "170px"
                       )),
                column(
                  offset = 1,
@@ -170,7 +170,7 @@ navbarPage(
              div(
                column(width = 3,
                       imageOutput(
-                        "ardia", width = "150px", height = "200px"
+                        "ardia", width = "150px", height = "170px"
                       )),
                column(
                  offset = 1,
@@ -202,7 +202,7 @@ navbarPage(
           column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "bluteau", width = "140px", height = "200px"
+                          "bluteau", width = "140px", height = "120px"
                         )),
                  column(
                    offset = 0,
@@ -216,7 +216,7 @@ navbarPage(
           column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "borms", width = "140px", height = "200px"
+                          "borms", width = "140px", height = "120px"
                         )),
                  column(
                    offset = 0,
@@ -230,7 +230,7 @@ navbarPage(
           column(width = 4,
                  column(width = 3,
                         imageOutput(
-                          "algaba", width = "140px", height = "200px"
+                          "algaba", width = "140px", height = "120px"
                         )),
                  column(
                    offset = 0,
