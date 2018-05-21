@@ -12,6 +12,10 @@ library("data.table")
 library("scales")
 library("TTR")
 
+### TODO: add Andres NBB funding
+### TODO: faster?
+### TODO: clean once and for always
+
 # load input data with all relevant information, including sentiment scores (data not included in the repo!)
 out <- as.data.table(feather::read_feather("OUT.feather"))
 
@@ -361,7 +365,7 @@ function(input, output) {
   output$plot <- renderPlot({
     validate(
       need(all(c(validator(input), selData$valid == TRUE)),
-           paste0("You probably made one ore more wrong parameter choices. Potential problems are:", "\n",
+           paste0("You probably made one or more wrong parameter choices. Potential problems are:", "\n",
                   "- select at least one input language and one input lexicon", "\n",
                   "- the minimum number of words and documents need to be above zero", "\n", 
                   "- the moving average period needs to be above zero", "\n",
@@ -382,7 +386,7 @@ function(input, output) {
   output$plotFull <- renderPlot({
     validate(
       need(all(c(validator2(input), selDataFull$valid == TRUE)),
-           paste0("You probably made one ore more wrong parameter choices. Potential problems are:", "\n",
+           paste0("You probably made one or more wrong parameter choices. Potential problems are:", "\n",
                   "- the minimum number of words and documents need to be above zero", "\n", 
                   "- the moving average period needs to be above zero", "\n",
                   "- there might be too few data points (less than 10 available days) for at least one of the indices", "\n",

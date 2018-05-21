@@ -53,7 +53,7 @@ navbarPage(
              column(
                width = 12,
                h4(
-                 "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia."
+                 "Swiss National Science Foundation (SNSF) funding for Sentometrics research of David Ardia and Samuel Borms."
                )
              )),
     hr(),
